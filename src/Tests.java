@@ -77,6 +77,16 @@ public class Tests {
         File img19 = new File("images/Test19.jpg"); // Michael Jordan
         File img20 = new File("images/Test20.jpg"); // Thermo Diagram
         File img21 = new File("images/Test21.png"); // Thermo Diagram (better quality)
+        File img22 = new File("images/Test22.jpg"); // World Map
+        File img23 = new File("images/Test23.jpg"); // Africa Map
+        File img24 = new File("images/Test24.jpg"); // Asia Map
+        File img25 = new File("images/Test25.png"); // World Map (Smaller)
+        File img26 = new File("images/Test26.jpeg"); // Grid (lots of jpeg)
+        File img27 = new File("images/Test27.jpg"); // Cool Swirl
+        File img28 = new File("images/Test28.png"); // Cool Design
+        File img29 = new File("images/Test29.jpg"); // Cool Design again
+        File img30 = new File("images/Test30.jpg"); // Circle Design
+        File img31 = new File("images/Test31.jpeg"); // Square Design
 
         File real1 = new File("images/Real1.jpg"); // Plug in wall
 

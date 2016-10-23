@@ -9,6 +9,8 @@
  *              - Analyze picture to determine whether to invert colors (if more shading than empty space)
  *              - [IMPORTANT] Implement the capability to compress an image if it's too big or scale up an
  *                image if it's too small
+ *      v1.0.1 - 10/22/16
+ *          - Added an empty default constructor to instantiate Pixel objects outside of this class
  *      v1.0.0 - 10/4/16
  *          - NO CHANGES - MARKING FIRST RELEASE.
  *      v0.1.1 - 9/29/16
@@ -243,6 +245,11 @@ public class Picture {
     //************************//
     //***** CONSTRUCTORS *****//
     //************************//
+
+    // YOU SHOULD ALMOST NEVER CALL THIS CLASS. IT'S ONLY FOR INSTANTIATING PIXELS OUTSIDE OF THIS CLASS.
+    public Picture() {
+
+    }
 
     public Picture(BufferedImage image, double pixelThresholdPercent, double rgbSensitivityThreshold) {
         this.image = image;

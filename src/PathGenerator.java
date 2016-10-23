@@ -15,24 +15,30 @@
  *              - Come up with way to use true Euclidean distance instead of square approximation (maybe)
  *              - MUST improve the filterSubIsland method performance! For large subislands or single large islands
  *                this method takes an obscene amount of time to check the subisland.
+ *      v1.0.3 - 10/22/16
+ *          - ADDED
+ *              - Origin is now always the last point in path
+ *      v1.0.2 - 10/11/16
+ *          - FIXED
+ *              - More accurate push factor value found by taking into account larger marker thickness
  *      v1.0.1 - 10/7/16
- *              - FIXED
- *                  - Bug causing marker thickness above 5 to run in an infinite loop
+ *          - FIXED
+ *              - Bug causing marker thickness above 5 to run in an infinite loop
  *      v1.0.0 - 10/4/16 - FIRST WORKING RELEASE OF ALGORITHM
- *              - FIXED
- *                  - Bug in reduceOverflow causing lines to be incorrectly redrawn.
- *              - [BUG] Stops processing somewhere for thickness above 3 and 5!!!
+ *          - FIXED
+ *              - Bug in reduceOverflow causing lines to be incorrectly redrawn.
+ *          - [BUG] Stops processing somewhere for thickness above 3 and 5!!!
  *      v0.3.1 - 10/3/16
- *              - FIXED
- *                  - Massive for loop bug causing the mark(int x, int y) and hypothetical marking methods
+ *          - FIXED
+ *              - Massive for loop bug causing the mark(int x, int y) and hypothetical marking methods
  *                    to fail.
- *                  - Error involving switching the X and Y coordinates for bounding box creation
- *                  - Null Pointer Exception for non-traversed islands accidentally traversed completely by
+ *              - Error involving switching the X and Y coordinates for bounding box creation
+ *              - Null Pointer Exception for non-traversed islands accidentally traversed completely by
  *                    marker thickness on independent other islands (while loop would not terminate correctly)
- *                  - Error involving array out of bounds for path-fixing algorithm (added inrange condition)
- *                  - Method calculating Pixel adjacency not having correct range
- *                  - Error involving miscalculation of the penDown parameter for path creation
- *                  - Mixed up x and y values for adjacency tests (inside() and adjacentToMarker())
+ *              - Error involving array out of bounds for path-fixing algorithm (added inrange condition)
+ *              - Method calculating Pixel adjacency not having correct range
+ *              - Error involving miscalculation of the penDown parameter for path creation
+ *              - Mixed up x and y values for adjacency tests (inside() and adjacentToMarker())
  *      v0.3.0 - 9/29/16
  *          - BUGS
  *              - Processing in island takes a long time for some reason
@@ -376,6 +382,7 @@ public class PathGenerator {
                     filterSubIslands(p);
                 }
             }
+
 
             // If there are no more unprocessed pixels in the island, return null. Otherwise,
             // return a pixel to hop to.
@@ -979,6 +986,8 @@ public class PathGenerator {
     // If no such Pixel is found, it returns itself.
     public Picture.Pixel pushFactor(Picture.Pixel p) {
 
+        int borderDist = (thickness - 1) / 2;
+
         int currX = p.getX();
         int currY = p.getY();
 
@@ -1037,22 +1046,22 @@ public class PathGenerator {
             return p;
         } else if (Math.abs(xMovement) == Math.abs(yMovement)) {
 
-            xMovement = xMovement / Math.abs(xMovement);
-            yMovement = yMovement / Math.abs(yMovement);
+            xMovement = (xMovement / Math.abs(xMovement)) * borderDist;
+            yMovement = (yMovement / Math.abs(yMovement)) * borderDist;
 
             if (pic.inRange(currX + xMovement, currY + yMovement) &&
                     pic.getPicture()[currX + xMovement][currY + yMovement] != null) {
                 return pic.getPicture()[currX + xMovement][currY + yMovement];
             }
         } else if (Math.abs(xMovement) > Math.abs(yMovement)) {
-            xMovement = xMovement / Math.abs(xMovement);
+            xMovement = (xMovement / Math.abs(xMovement)) * borderDist;
 
             if (pic.inRange(currX + xMovement, currY) &&
                     pic.getPicture()[currX + xMovement][currY] != null) {
                 return pic.getPicture()[currX + xMovement][currY];
             }
         } else if (Math.abs(xMovement) < Math.abs(yMovement)) {
-            yMovement = yMovement / Math.abs(yMovement);
+            yMovement = (yMovement / Math.abs(yMovement)) * borderDist;
 
             if (pic.inRange(currX, currY + yMovement) &&
                     pic.getPicture()[currX][currY + yMovement] != null) {
@@ -1181,6 +1190,9 @@ public class PathGenerator {
         for (Path.Point<Picture.Pixel, Boolean> point : path.getPath()) {
             reduceOverflow(point.getKey(), path);
         }
+
+        // Returns to the origin at the end
+        path.addPoint(new Picture().new Pixel(0, 0), false);
 
         return path;
     }

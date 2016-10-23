@@ -1,12 +1,3 @@
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.ArrayList;
-
 /**
  * Author: Albert Li
  * Start Date: 10/4/16
@@ -22,6 +13,15 @@ import java.util.ArrayList;
  *              - Simplifies the final picture by removing island and pen up cues
  *
  */
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.ArrayList;
 
 public class Animator extends JPanel implements ActionListener {
 
@@ -59,6 +59,16 @@ public class Animator extends JPanel implements ActionListener {
             File img19 = new File("images/Test19.jpg"); // Michael Jordan
             File img20 = new File("images/Test20.jpg"); // Thermo Diagram
             File img21 = new File("images/Test21.png"); // Thermo Diagram (better quality)
+            File img22 = new File("images/Test22.jpg"); // World Map
+            File img23 = new File("images/Test23.jpg"); // Africa Map
+            File img24 = new File("images/Test24.jpg"); // Asia Map
+            File img25 = new File("images/Test25.png"); // World Map (Smaller, Bad)
+            File img26 = new File("images/Test26.jpeg"); // Grid (lots of jpeg)
+            File img27 = new File("images/Test27.jpg"); // Cool Swirl
+            File img28 = new File("images/Test28.png"); // Cool Design
+            File img29 = new File("images/Test29.jpg"); // Cool Design again
+            File img30 = new File("images/Test30.jpg"); // Circle Design
+            File img31 = new File("images/Test31.jpeg"); // Square Design
 
             File real1 = new File("images/Real1.jpg"); // Plug in wall
 
@@ -70,13 +80,14 @@ public class Animator extends JPanel implements ActionListener {
             // - thickness determines how many pixels x pixels thick the marker is. In reality, the marker is
             // probably closer to a circle, but we can use squares to approximate it for sufficiently small sizes.
             double pixelThresholdPercent = .01;
-            double rgbSensitivityThreshold = 32;
-            int thickness = 5;
+            double rgbSensitivityThreshold = 48;
+            int thickness = 3;
 
             int timeDelay = 1; // Delay between line segments drawn in ms
 
             // Which image is being drawn
-            File applyToAllTests = img13;
+            // NOTE - FILTERSUBISLAND BLOCK IS BEING COMMENTED OUT RIGHT NOW.
+            File applyToAllTests = img14;
 
             // Don't mess with anything under this comment.
             BufferedImage imagePathTest = ImageIO.read(applyToAllTests);
