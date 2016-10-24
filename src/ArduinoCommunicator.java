@@ -5,14 +5,14 @@
  * Description: Handles the conversion of Java-produced information into Arduino-readable and executable code.
  *
  * Changelog:
- *      To-Do:
- *          - Figure out how to set up circuit to receive different commands and perhaps light up different LEDs
- *            depending on what path commands are being sent.
- *          - Figure out how to correctly time the signal communication so that the timing of path-processing is
- *            correct. In other words, how to make sure you wait until a sub-path is completed before sending the
- *            instructions to move to the next path.
- *      v0.2.0 - 10/23/16
- *          - [NOT DEBUGGED] Implemented ability to send coded buffered Strings to the Arduino for processing
+ *      UPCOMING CHANGES -
+ *          - [IMPORTANT] Add in ability to move pen up and down.
+ *          - [MAYBE] Add in "advanced settings" which would allow the user to control the other Picture parameters
+ *      v1.0.0 - 10/23/16
+ *          - First workable release. Not tested with assembly yet (still being designed).
+ *          - Communicator with ability to:
+ *              - Generate a path from an image and produce a set of Arduino-readable instructions
+ *              - Receive signals from the Arduino to control speed that instructions are sent
  *      v0.1.0 - 10/22/16
  *          - Implemented ability to correctly parse serial data FROM the arduino. This will allow the program to
  *            know when to send in new data
@@ -35,8 +35,15 @@ import javax.imageio.ImageIO;
 
 public class ArduinoCommunicator {
 
+    // the port object that is central to communication
     private static SerialPort serialPort;
-    private static boolean ready;
+
+    // ready is a variable tracking whether the Arduino has processed one set of instructions and is ready
+    // to receive the next set. done tracks whether serial communication is finished.
+    private static boolean ready = false;
+    private static boolean done = false;
+
+    // these depend on the physical dimensions of the board
     private static final double DRAW_WINDOW_WIDTH = 12; // inches
     private static final double DRAW_WINDOW_HEIGHT = 9; // inches
 
@@ -50,6 +57,8 @@ public class ArduinoCommunicator {
         StringBuilder message = new StringBuilder();
         Boolean receivingMessage = false;
 
+        // Sets format for receiving and constructing messages FROM the Arduino. This is to bypass the difference
+        // in speed between processing and serial communication. All messages begin with ">" and end with "\r".
         public void serialEvent(SerialPortEvent event) {
             if(event.isRXCHAR() && event.getEventValue() > 0){
                 try {
@@ -65,8 +74,12 @@ public class ArduinoCommunicator {
                                 String toProcess = message.toString();
                                 Platform.runLater(new Runnable() {
                                     @Override public void run() {
-                                        if (toProcess.equals("ready")) {
+                                        if (toProcess.equals("r")) {
                                             ready = true;
+                                        } else if (toProcess.equals("d")) {
+                                            done = true;
+                                        } else {
+                                            System.out.println(toProcess);
                                         }
                                     }
                                 });
@@ -88,6 +101,7 @@ public class ArduinoCommunicator {
 
     public static void main(String[] args) throws InterruptedException, IOException {
 
+        // Test cases hardcoded in.
         File img1 = new File("images/Test3.jpg"); // Complex Geometric Shape - [1; rgb48]
         File img2 = new File("images/Test5.jpeg"); // Mona Lisa [1; rgb48]
         File img3 = new File("images/Test9.png"); // More Text [1; rgb192]
@@ -95,6 +109,7 @@ public class ArduinoCommunicator {
         File img5 = new File("images/Test16.jpeg"); // Brain
         File img6 = new File("images/Test21.png"); // Thermo Diagram (better quality)
 
+        // SETTINGS FOR THE PICTURE. I might add in capabilities to change these.
         double pixelThresholdPercent = .01;
         int thickness = 5; // fairly static, not sure if I will change it
         double rgbSensitivityThreshold = 48; // just a default value, will be changed in the code
@@ -102,6 +117,7 @@ public class ArduinoCommunicator {
 
         Scanner scanner = new Scanner(System.in);
 
+        // Selection menu for samples. Will work on ability to pass in images at will.
         while (true) {
 
             System.out.println("\nLook through the menu and enter the number you'd like to print: \n");
@@ -182,14 +198,16 @@ public class ArduinoCommunicator {
         PathGenerator pg = new PathGenerator(pic, thickness, subIslandPixelThreshold);
         Path path = pg.makePath();
         ArrayList<Path.Point<Picture.Pixel, Boolean>> pathList = path.getPath();
+
+        // useful variables
         int pathLength = pathList.size();
         int pathIndex = 0;
-
         int picHeight = pic.getPicture().length;
         int picWidth = pic.getPicture()[0].length;
         double xPrime; // x' and y' are the adjusted coordinates for the starting position of the marker after centering
         double yPrime;
-        double ipr;
+        double ipr; // inch-pixel ratio
+        ArrayList<String> buffer = new ArrayList<>(); // the buffer object that will hold the path instructions
 
         // Calculating inch-pixel ratio and x' and y' (remember x and y are using matrix coordinates)
         if (((double)picWidth) / ((double)picHeight) < DRAW_WINDOW_WIDTH / DRAW_WINDOW_HEIGHT) {
@@ -202,69 +220,83 @@ public class ArduinoCommunicator {
             xPrime = ((DRAW_WINDOW_HEIGHT - ipr * picHeight) / 2) / ipr;
         }
 
-        /* DEBUGGING
+        // Filling the buffer - we store the buffer processor-side because there's a limit to the size
+        // of the serial communication buffer for the Arduino (64 bytes)
+        while (pathIndex < pathLength) {
+
+            Path.Point<Picture.Pixel, Boolean> point = pathList.get(pathIndex);
+            String toSend = "";
+
+            if (pathIndex == 0) { // configuration block - ipr and x' and y'
+                toSend = toSend + "q" + ipr + "\n";
+                buffer.add(toSend);
+                System.out.print(" ");
+                toSend = "";
+                toSend = toSend + "c" + (int)xPrime + "." + (int)yPrime + "\n";
+                buffer.add(toSend);
+                ready = false;
+                System.out.print(" "); // NEED THIS HERE TO RESOLVE A MULTITHREAD PROCESSING GLITCH
+
+            } else if (pathIndex == pathLength - 1) {
+                toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "\n";
+                buffer.add(toSend);
+                System.out.print(" ");
+                buffer.add("z");
+                ready = false;
+                System.out.print(" ");
+
+            } else {
+                toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "\n";
+                buffer.add(toSend);
+                ready = false;
+                System.out.print(" ");
+            }
+
+            pathIndex++;
+
+        }
+
+        /* DEBUGGING BLOCK
         for (int i = 0; i < portNames.length; i++) {
             System.out.println(portNames[i]);
         }
         */
 
-        int index = 0;
+        int index = 0; // index for the number of available ports
+        int bufferIndex = 0; // index for the set of instructions in the buffer
 
         while (index < portNames.length) {
             try {
-                // Finding valid port
+
+                // Finding valid port + serial communication settings
                 serialPort = new SerialPort(portNames[index]);
                 serialPort.openPort();
                 serialPort.setParams(9600,8,1,0);
-                serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_RTSCTS_IN |
-                        SerialPort.FLOWCONTROL_RTSCTS_OUT);
+                serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_XONXOFF_IN | SerialPort.FLOWCONTROL_XONXOFF_OUT);
                 serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
+
+                // If the program has reached this point, the port connection is almost certainly successful
                 System.out.println("\n***** Port Connection Successful! *****");
                 System.out.println("\n     SENDING DATA...\n");
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+                // waits until the Arduino is ready before sending data
+                while (!ready) {
+                    System.out.print(""); // syncs multithread processing
                 }
 
-                // Operations
+                // communicates instructions one at a time to the Arduino. only communicates as quickly as the
+                // the Arduino is ready to receive (that's the purpose of the ready variable).
                 while(true) {
-                    if (pathIndex < pathLength) {
-
-                        Path.Point<Picture.Pixel, Boolean> point = pathList.get(pathIndex);
-                        String toSend = "";
-
-                        if (pathIndex == 0) { // configuration block - ipr and x' and y'
-                            toSend = toSend + "q" + ipr + "\n";
-                            serialPort.writeString(toSend);
-                            // System.out.println(toSend); // Debug
-                            toSend = "";
-                            toSend = toSend + "c" + (int)xPrime + "." + (int)yPrime + "\n";
-                            serialPort.writeString(toSend);
-                            // System.out.println(toSend); // Debug
-
-                        } else if (pathIndex == pathLength - 1) {
-                            toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "\n";
-                            serialPort.writeString(toSend);
-                            // System.out.println(toSend); // Debug
-                            toSend = "";
-                            toSend = toSend + "p" + (-(int)xPrime) + "." + (-(int)yPrime) + "\n";
-                            serialPort.writeString(toSend);
-                            // System.out.println(toSend); // Debug
-
-                        } else {
-                            toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "\n";
-                            serialPort.writeString(toSend);
-                            // System.out.println(toSend); // Debug
-                        }
-
-                        pathIndex++;
-
-                    } else {
-                        serialPort.closePort();
-                        break;
+                    if (bufferIndex < buffer.size() && ready) {
+                        ready = false;
+                        serialPort.writeString(buffer.get(bufferIndex));
+                        bufferIndex++;
                     }
+
+                    if (done) break;
                 }
+
+                serialPort.closePort();
 
             } catch (SerialPortException e) {
                 index++;
@@ -273,7 +305,7 @@ public class ArduinoCommunicator {
                 }
             }
 
-            System.out.println("***** Serial Communication Complete! *****");
+            System.out.println("\n***** Serial Communication Complete! *****");
             break;
 
         }

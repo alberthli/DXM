@@ -21,7 +21,7 @@
  *                x y : row col relation)
  *              - Fixed error that would invert black/white detection in images
  *              - Fixed constructor assignment error (calls out of order)
- *      v0.1 - 9/26/16
+ *      v0.1.0 - 9/26/16
  *          - [INSPECTED][NOT DEBUGGED] Picture with capabilities to:
  *              - Retrieve array of pixels in it. Can return island of any pixel
  *              - Retrieve list of distinct islands in the picture

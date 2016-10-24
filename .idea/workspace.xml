@@ -2,20 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4602e647-9b8d-4b00-9935-928185c503a4" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/DXM/Animator.class" afterPath="$PROJECT_DIR$/out/production/DXM/Animator.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/DXM/PathGenerator.class" afterPath="$PROJECT_DIR$/out/production/DXM/PathGenerator.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/DXM/Picture$Island.class" afterPath="$PROJECT_DIR$/out/production/DXM/Picture$Island.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/DXM/Picture$Pixel.class" afterPath="$PROJECT_DIR$/out/production/DXM/Picture$Pixel.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/DXM/Picture.class" afterPath="$PROJECT_DIR$/out/production/DXM/Picture.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/DXM/Tests.class" afterPath="$PROJECT_DIR$/out/production/DXM/Tests.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DXM.iml" afterPath="$PROJECT_DIR$/DXM.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Animator.java" afterPath="$PROJECT_DIR$/src/Animator.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ArduinoCommunicator.java" afterPath="$PROJECT_DIR$/src/ArduinoCommunicator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/PathGenerator.java" afterPath="$PROJECT_DIR$/src/PathGenerator.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Picture.java" afterPath="$PROJECT_DIR$/src/Picture.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Tests.java" afterPath="$PROJECT_DIR$/src/Tests.java" />
     </list>
     <ignored path="MarkerBot.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -36,7 +25,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="Path.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Path.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Path.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="600">
@@ -49,8 +38,8 @@
       <file leaf-file-name="PathGenerator.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/PathGenerator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="19" column="61" selection-start-line="19" selection-start-column="61" selection-end-line="19" selection-end-column="61" />
+            <state relative-caret-position="255">
+              <caret line="17" column="25" selection-start-line="17" selection-start-column="25" selection-end-line="17" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -59,8 +48,8 @@
       <file leaf-file-name="Picture.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Picture.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="16" column="29" selection-start-line="16" selection-start-column="29" selection-end-line="16" selection-end-column="29" />
+            <state relative-caret-position="255">
+              <caret line="23" column="14" selection-start-line="23" selection-start-column="14" selection-end-line="23" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -88,11 +77,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ArduinoCommunicator.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ArduinoCommunicator.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/ArduinoCommunicator.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="232">
-              <caret line="260" column="36" selection-start-line="260" selection-start-column="36" selection-end-line="260" selection-end-column="36" />
+            <state relative-caret-position="135">
+              <caret line="110" column="0" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
                 <element signature="imports" expanded="true" />
@@ -124,9 +113,9 @@
         <option value="$PROJECT_DIR$/src/Tests.java" />
         <option value="$PROJECT_DIR$/src/Animator.java" />
         <option value="$PROJECT_DIR$/jSSC-2.7.0-Release/jssc.jar!/jssc/SerialPort.class" />
-        <option value="$PROJECT_DIR$/src/Picture.java" />
         <option value="$PROJECT_DIR$/src/PathGenerator.java" />
         <option value="$PROJECT_DIR$/src/Path.java" />
+        <option value="$PROJECT_DIR$/src/Picture.java" />
         <option value="$PROJECT_DIR$/src/ArduinoCommunicator.java" />
       </list>
     </option>
@@ -577,7 +566,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -586,9 +575,9 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4375" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="1.0" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32954547" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32954547" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24959612" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -930,22 +919,35 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/jSSC-2.7.0-Release/jssc.jar!/jssc/SerialPort.class">
+    <entry file="file://$PROJECT_DIR$/src/Tests.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="122">
-          <caret line="195" column="30" selection-start-line="195" selection-start-column="19" selection-end-line="195" selection-end-column="30" />
+        <state relative-caret-position="225">
+          <caret line="95" column="0" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ArduinoCommunicator.java">
+    <entry file="file://$PROJECT_DIR$/src/Path.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="232">
-          <caret line="260" column="36" selection-start-line="260" selection-start-column="36" selection-end-line="260" selection-end-column="36" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="600">
+          <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/PathGenerator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="25" selection-start-line="17" selection-start-column="25" selection-end-line="17" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/jSSC-2.7.0-Release/jssc.jar!/jssc/SerialPort.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="219">
+          <caret line="67" column="46" selection-start-line="67" selection-start-column="46" selection-end-line="67" selection-end-column="46" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -959,35 +961,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Tests.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="95" column="0" selection-start-line="95" selection-start-column="0" selection-end-line="95" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Picture.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="16" column="29" selection-start-line="16" selection-start-column="29" selection-end-line="16" selection-end-column="29" />
+        <state relative-caret-position="255">
+          <caret line="23" column="14" selection-start-line="23" selection-start-column="14" selection-end-line="23" selection-end-column="14" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/PathGenerator.java">
+    <entry file="file://$PROJECT_DIR$/src/ArduinoCommunicator.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="19" column="61" selection-start-line="19" selection-start-column="61" selection-end-line="19" selection-end-column="61" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Path.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="135">
+          <caret line="110" column="0" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
