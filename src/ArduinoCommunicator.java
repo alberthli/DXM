@@ -46,6 +46,7 @@ public class ArduinoCommunicator {
     private static boolean ready = false;
     private static boolean done = false;
     private static boolean advanced = false;
+    private static boolean receiveData = true;
 
     // these depend on the physical dimensions of the board
     private static final double DRAW_WINDOW_WIDTH = 12; // inches
@@ -85,7 +86,9 @@ public class ArduinoCommunicator {
                                             done = true;
                                             System.out.print("");
                                         } else {
-                                            System.out.println(toProcess);
+                                            if (receiveData) {
+                                                System.out.println(toProcess);
+                                            }
                                         }
                                     }
                                 });
@@ -295,6 +298,18 @@ public class ArduinoCommunicator {
                     }
                 }
 
+            }
+
+            System.out.println("\nWould you like to receive coordinate data from the Arduino? Enter \"Y\"");
+            System.out.println("to accept, anything else for no.\n");
+
+            String receive = scanner.nextLine();
+
+            if (!receive.equals("Y") && !receive.equals("y")) {
+                receiveData = false;
+                System.out.println("\nCoordinate Data Deactivated.");
+            } else {
+                System.out.println("\nCoordinate Data Activated.");
             }
 
             if (moveOn) break;
