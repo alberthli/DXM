@@ -6,8 +6,10 @@
  *
  * Changelog:
  *      UPCOMING CHANGES -
- *          - [IMPORTANT] Add in ability to move pen up and down.
- *          - [MAYBE] Add in "advanced settings" which would allow the user to control the other Picture parameters
+ *          - [IMPORTANT] Add in ability to move pen up and down
+ *      v1.0.1 - 10/24/16
+ *          - Added in message warning about serial communication issues.
+ *          - Added in cheesy loading dots for my own amusement
  *      v1.0.0 - 10/23/16
  *          - First workable release. Not tested with assembly yet (still being designed).
  *          - Communicator with ability to:
@@ -39,9 +41,11 @@ public class ArduinoCommunicator {
     private static SerialPort serialPort;
 
     // ready is a variable tracking whether the Arduino has processed one set of instructions and is ready
-    // to receive the next set. done tracks whether serial communication is finished.
+    // to receive the next set. done tracks whether serial communication is finished. advanced indicates
+    // whether the user is advanced and can modify special values.
     private static boolean ready = false;
     private static boolean done = false;
+    private static boolean advanced = false;
 
     // these depend on the physical dimensions of the board
     private static final double DRAW_WINDOW_WIDTH = 12; // inches
@@ -76,8 +80,10 @@ public class ArduinoCommunicator {
                                     @Override public void run() {
                                         if (toProcess.equals("r")) {
                                             ready = true;
+                                            System.out.print("");
                                         } else if (toProcess.equals("d")) {
                                             done = true;
+                                            System.out.print("");
                                         } else {
                                             System.out.println(toProcess);
                                         }
@@ -120,6 +126,32 @@ public class ArduinoCommunicator {
         // Selection menu for samples. Will work on ability to pass in images at will.
         while (true) {
 
+            System.out.println("\nIf you are an advanced user who wants to modify MARKER THICKNESS or ");
+            System.out.println("RGB SENSITIVITY, enter \"Y\". Enter anything else to continue as a normal user.");
+            System.out.println("else to continue as a normal user.\n");
+
+            String setting = scanner.nextLine();
+
+            if (setting.equals("Y") || setting.equals("y")) {
+                advanced = true;
+                System.out.print("\nAdvanced Mode Activated");
+
+            } else {
+                System.out.print("\nNormal Mode Activated");
+
+            }
+
+            for (int i = 0; i < 5; i++) {
+                try {
+                    Thread.sleep(200);
+                } catch (Exception e) {
+
+                }
+                System.out.print(".");
+            }
+
+            System.out.println();
+
             System.out.println("\nLook through the menu and enter the number you'd like to print: \n");
             System.out.println("(1) Cool Geometric Shape");
             System.out.println("(2) Mona Lisa");
@@ -127,63 +159,172 @@ public class ArduinoCommunicator {
             System.out.println("(4) Interesting Sign");
             System.out.println("(5) The Brain");
             System.out.println("(6) Thermodynamic Diagram\n");
-            System.out.println("What would you like to print? Enter the number here: ");
+            System.out.println("What would you like to print? Enter the number here: \n");
 
-            String input = scanner.nextLine();
             boolean moveOn = false;
+            boolean invalid = true;
 
-            switch(input) {
-                case "1":
-                    moveOn = true;
-                    rgbSensitivityThreshold = 48;
-                    image = ImageIO.read(img1);
-                    break;
+            while (invalid) {
 
-                case "2":
-                    moveOn = true;
-                    rgbSensitivityThreshold = 48;
-                    image = ImageIO.read(img2);
-                    break;
+                String input = scanner.nextLine();
 
-                case "3":
-                    moveOn = true;
-                    rgbSensitivityThreshold = 216;
-                    image = ImageIO.read(img3);
-                    break;
+                switch (input) {
+                    case "1":
+                        moveOn = true;
+                        if (!advanced)
+                            rgbSensitivityThreshold = 48;
+                        image = ImageIO.read(img1);
+                        invalid = false;
+                        break;
 
-                case "4":
-                    moveOn = true;
-                    rgbSensitivityThreshold = 48;
-                    image = ImageIO.read(img4);
-                    break;
+                    case "2":
+                        moveOn = true;
+                        if (!advanced)
+                            rgbSensitivityThreshold = 48;
+                        image = ImageIO.read(img2);
+                        invalid = false;
+                        break;
 
-                case "5":
-                    moveOn = true;
-                    rgbSensitivityThreshold = 48;
-                    image = ImageIO.read(img5);
-                    break;
+                    case "3":
+                        moveOn = true;
+                        if (!advanced)
+                            rgbSensitivityThreshold = 216;
+                        image = ImageIO.read(img3);
+                        invalid = false;
+                        break;
 
-                case "6":
-                    moveOn = true;
-                    rgbSensitivityThreshold = 192;
-                    image = ImageIO.read(img6);
-                    break;
+                    case "4":
+                        moveOn = true;
+                        if (!advanced)
+                            rgbSensitivityThreshold = 48;
+                        image = ImageIO.read(img4);
+                        invalid = false;
+                        break;
 
-                default:
-                    System.out.println("\nERROR: Please enter a number between 1 and 6!\n");
-                    break;
+                    case "5":
+                        moveOn = true;
+                        if (!advanced)
+                            rgbSensitivityThreshold = 48;
+                        image = ImageIO.read(img5);
+                        invalid = false;
+                        break;
+
+                    case "6":
+                        moveOn = true;
+                        if (!advanced)
+                            rgbSensitivityThreshold = 192;
+                        image = ImageIO.read(img6);
+                        invalid = false;
+                        break;
+
+                    default:
+                        System.out.println("\nERROR: Please enter a number between 1 and 6!\n");
+                        break;
+                }
+            }
+
+            if (advanced) {
+
+                System.out.println("\n\n[ADVANCED]");
+                System.out.println("\nChoose the RGB SENSITIVITY. This is a number between 0 and 255");
+                System.out.println("that determines the RGB values that will cause a pixel to be");
+                System.out.println("included in the drawing.\n");
+
+                while (true) {
+                    try {
+                        String numString = scanner.nextLine();
+                        int num = Integer.parseInt(numString);
+
+                        if (num < 0 || num > 255) {
+                            System.out.println("\nPlease enter a number between 0 and 255!\n");
+                            continue;
+                        }
+
+                        rgbSensitivityThreshold = num;
+                        System.out.println("\nRGB Sensitivity set to: " + rgbSensitivityThreshold + "\n");
+
+                        for (int i = 0; i < 10; i++) {
+                            try {
+                                Thread.sleep(200);
+                            } catch (Exception e) {
+
+                            }
+                            System.out.print(".");
+                        }
+                        System.out.println();
+
+                        break;
+
+                    } catch (Exception e) {
+                        System.out.println("\nPlease enter a number between 0 and 255!\n");
+                    }
+                }
+
+                System.out.println("\n\n[ADVANCED]");
+                System.out.println("\nChoose the MARKER THICKNESS. This is an ODD integer that controls");
+                System.out.println("how thick the marker is, and thus controls how many pixels are");
+                System.out.println("traversed by the marker, changing the path.\n");
+
+                while (true) {
+                    try {
+                        String numString = scanner.nextLine();
+                        int num = Integer.parseInt(numString);
+
+                        if (num % 2 != 1) {
+                            System.out.println("\nPlease enter an ODD INTEGER (recommended value is 5)!\n");
+                            continue;
+                        }
+
+                        thickness = num;
+                        System.out.println("\nMarker Thickness set to: " + thickness + "\n");
+
+                        for (int i = 0; i < 10; i++) {
+                            try {
+                                Thread.sleep(200);
+                            } catch (Exception e) {
+
+                            }
+                            System.out.print(".");
+                        }
+                        System.out.println();
+
+                        break;
+
+                    } catch (Exception e) {
+                        System.out.println("\nPlease enter a number between 0 and 255!\n");
+                    }
+                }
+
             }
 
             if (moveOn) break;
 
         }
 
+        System.out.println("\nNOTE: If the program doesn't work, there is probably a synchronization issue stemming" +
+                " from issues with serial communication.");
+        System.out.println("Simply try restarting communication by restarting the" +
+                " program or reconnecting the hardware.");
+        System.out.println("\nPress ENTER to continue.\n");
+        scanner.nextLine();
+        System.out.println("Attemping Serial Communication\n");
+
+        for (int i = 0; i < 10; i++) {
+            try {
+                Thread.sleep(200);
+            } catch (Exception e) {
+
+            }
+            System.out.print(".");
+        }
+        System.out.println();
+
         // Find all possible ports
         String[] portNames = SerialPortList.getPortNames();
 
         if (portNames.length == 0) {
             System.out.println("\nERROR: There are no serial-ports! Make sure your connection is secure!");
-            System.out.println("Press Enter to exit...\n");
+            System.out.println("Press Enter to exit");
             try {
                 System.in.read();
             } catch (IOException e) {
@@ -230,26 +371,26 @@ public class ArduinoCommunicator {
             if (pathIndex == 0) { // configuration block - ipr and x' and y'
                 toSend = toSend + "q" + ipr + "\n";
                 buffer.add(toSend);
-                System.out.print(" ");
+                System.out.print("");
                 toSend = "";
                 toSend = toSend + "c" + (int)xPrime + "." + (int)yPrime + "\n";
                 buffer.add(toSend);
                 ready = false;
-                System.out.print(" "); // NEED THIS HERE TO RESOLVE A MULTITHREAD PROCESSING GLITCH
+                System.out.print(""); // NEED THIS HERE TO RESOLVE A MULTITHREAD PROCESSING GLITCH
 
             } else if (pathIndex == pathLength - 1) {
                 toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "\n";
                 buffer.add(toSend);
-                System.out.print(" ");
+                System.out.print("");
                 buffer.add("z");
                 ready = false;
-                System.out.print(" ");
+                System.out.print("");
 
             } else {
                 toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "\n";
                 buffer.add(toSend);
                 ready = false;
-                System.out.print(" ");
+                System.out.print("");
             }
 
             pathIndex++;
@@ -277,7 +418,17 @@ public class ArduinoCommunicator {
 
                 // If the program has reached this point, the port connection is almost certainly successful
                 System.out.println("\n***** Port Connection Successful! *****");
-                System.out.println("\n     SENDING DATA...\n");
+                System.out.print("\n     SENDING DATA");
+
+                for (int i = 0; i < 5; i++) {
+                    try {
+                        Thread.sleep(200);
+                    } catch (Exception e) {
+
+                    }
+                    System.out.print(".");
+                }
+                System.out.println("\n");
 
                 // waits until the Arduino is ready before sending data
                 while (!ready) {
@@ -287,6 +438,7 @@ public class ArduinoCommunicator {
                 // communicates instructions one at a time to the Arduino. only communicates as quickly as the
                 // the Arduino is ready to receive (that's the purpose of the ready variable).
                 while(true) {
+                    System.out.print("");
                     if (bufferIndex < buffer.size() && ready) {
                         ready = false;
                         serialPort.writeString(buffer.get(bufferIndex));

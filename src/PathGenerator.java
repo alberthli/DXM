@@ -6,14 +6,14 @@
  *
  * Changelog:
  *      UPCOMING CHANGES -
- *              - [] Add more tiebreaking capabilities for island processing!
+ *              - [] [MAYBE] Add more tiebreaking capabilities for island processing!
  *              - [-] Implement smart path editing
  *                  - [X] Move points IN if they experience a lot of overflow. Use edge PUSH indicators.
  *                  - [] Move points OUT if that would not reduce existing coverage and it would cover
  *                       non-traversed Pixels (NOTE: this means NOT putting discarded Pixels in traversed)
  *                       without a lot of increase in overflow.
- *              - Come up with way to use true Euclidean distance instead of square approximation (maybe)
- *              - MUST improve the filterSubIsland method performance! For large subislands or single large islands
+ *              - [PROBABLY NOT] Come up with way to use true Euclidean distance instead of square approximation
+ *              - [MAYBE] Improve the filterSubIsland method performance! For large subislands or single large islands
  *                this method takes an obscene amount of time to check the subisland.
  *      v1.0.3 - 10/22/16
  *          - ADDED

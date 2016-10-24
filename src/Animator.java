@@ -85,11 +85,10 @@ public class Animator extends JPanel implements ActionListener {
 
             int timeDelay = 1; // Delay between line segments drawn in ms
 
-            // Which image is being drawn
-            // NOTE - FILTERSUBISLAND BLOCK IS BEING COMMENTED OUT RIGHT NOW.
+            // Which image is being drawn - manually change this because this program is for visualization only
             File applyToAllTests = img14;
 
-            // Don't mess with anything under this comment.
+            // Don't mess with anything in this block.
             BufferedImage imagePathTest = ImageIO.read(applyToAllTests);
             Picture pic = new Picture(imagePathTest, pixelThresholdPercent, rgbSensitivityThreshold);
             int subIslandPixelThreshold = pic.getPixelThreshold();

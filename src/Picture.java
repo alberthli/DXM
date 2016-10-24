@@ -6,9 +6,7 @@
  *
  * Changelog:
  *      UPCOMING CHANGES -
- *              - Analyze picture to determine whether to invert colors (if more shading than empty space)
- *              - [IMPORTANT] Implement the capability to compress an image if it's too big or scale up an
- *                image if it's too small
+ *          - [MAYBE] Analyze picture to determine whether to invert colors (if more shading than empty space)
  *      v1.0.1 - 10/22/16
  *          - Added an empty default constructor to instantiate Pixel objects outside of this class
  *      v1.0.0 - 10/4/16

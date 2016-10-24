@@ -98,9 +98,6 @@ public class Tests {
         // manually change all the tests below.
         File applyToAllTests = img5;
 
-        // GENERAL TESTING NOTES
-        // INCREASING THICKNESS WILL EXPONENTIALLY INCREASE PROCESSING TIME BUT DECREASE DRAWING TIME
-
         //************************ TESTS FOR PICTURE.JAVA *************************//
 
         // [TEST 1] Checks whether Pixel array is created correctly

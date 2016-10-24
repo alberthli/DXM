@@ -144,9 +144,9 @@ void loop() {
         }
         
         // Debugging Block
-        Serial.print(">");
+        Serial.print(">X: ");
         Serial.print(x);
-        Serial.print(", ");
+        Serial.print(" | Y: ");
         Serial.print(y);
         Serial.println("\r");
         break;
