@@ -7,6 +7,9 @@
  * Changelog:
  *      UPCOMING CHANGES -
  *          - [IMPORTANT] Add in ability to move pen up and down
+ *      v1.1.0 - 10/25/16
+ *          - Added in ability to calibrate marker position before printing begins
+ *          - Changed menu slightly
  *      v1.0.1 - 10/24/16
  *          - Added in message warning about serial communication issues.
  *          - Added in cheesy loading dots for my own amusement

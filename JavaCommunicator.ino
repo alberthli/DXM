@@ -52,6 +52,31 @@ void loop() {
 
     // Cases for the incoming bytes
     switch (incomingByte) {
+
+      // These 4 cases are only for the initial marker calibration
+      case 'w':
+        xServo.write(0);
+        delay(100);
+        xServo.write(90);
+        break;
+
+      case 's':
+        xServo.write(180);
+        delay(100);
+        xServo.write(90);
+        break;
+
+      case 'a':
+        yServo.write(0);
+        delay(100);
+        yServo.write(90);
+        break;
+
+      case 'd':
+        yServo.write(180);
+        delay(100);
+        yServo.write(90);
+        break;
       
       case 'p': // p means it's receiving a new point to move to
 
