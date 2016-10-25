@@ -454,6 +454,7 @@ public class ArduinoCommunicator {
             System.out.println("Press Enter to exit.");
             try {
                 getInput();
+                frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
             } catch (Exception e) {
                 e.printStackTrace();
             }
