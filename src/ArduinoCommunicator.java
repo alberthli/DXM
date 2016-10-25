@@ -366,7 +366,7 @@ public class ArduinoCommunicator {
                         rgbSensitivityThreshold = num;
                         System.out.println("\nRGB Sensitivity set to: " + rgbSensitivityThreshold + "\n");
 
-                        for (int i = 0; i < 10; i++) {
+                        for (int i = 0; i < 5; i++) {
                             try {
                                 Thread.sleep(200);
                             } catch (Exception e) {
@@ -401,7 +401,7 @@ public class ArduinoCommunicator {
                         thickness = num;
                         System.out.println("\nMarker Thickness set to: " + thickness + "\n");
 
-                        for (int i = 0; i < 10; i++) {
+                        for (int i = 0; i < 5; i++) {
                             try {
                                 Thread.sleep(200);
                             } catch (Exception e) {
@@ -444,7 +444,7 @@ public class ArduinoCommunicator {
         getInput();
         System.out.println("Attemping Serial Communication\n");
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             try {
                 Thread.sleep(200);
             } catch (Exception e) {
@@ -459,10 +459,10 @@ public class ArduinoCommunicator {
 
         if (portNames.length == 0) {
             System.out.println("\nERROR: There are no serial-ports! Make sure your connection is secure!");
-            System.out.println("Press Enter to exit");
+            System.out.println("Press Enter to exit.");
             try {
-                System.in.read();
-            } catch (IOException e) {
+                getInput();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return;
