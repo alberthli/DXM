@@ -96,7 +96,7 @@ public class Tests {
 
         // If you want to do all the tests on the same image, change this parameter. Otherwise,
         // manually change all the tests below.
-        File applyToAllTests = img5;
+        File applyToAllTests = img14;
 
         //************************ TESTS FOR PICTURE.JAVA *************************//
 

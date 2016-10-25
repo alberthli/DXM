@@ -23,17 +23,23 @@
  *
  */
 
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.concurrent.CountDownLatch;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import jssc.*;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 
 public class ArduinoCommunicator {
 
@@ -47,10 +53,13 @@ public class ArduinoCommunicator {
     private static boolean done = false;
     private static boolean advanced = false;
     private static boolean receiveData = true;
+    private static boolean pass = false;
 
     // these depend on the physical dimensions of the board
     private static final double DRAW_WINDOW_WIDTH = 12; // inches
     private static final double DRAW_WINDOW_HEIGHT = 9; // inches
+
+    private static JTextArea ta;
 
     // Reads incoming messages from the Arduino
     private static class PortReader implements SerialPortEventListener {
@@ -108,7 +117,118 @@ public class ArduinoCommunicator {
 
     }
 
+    // Replaces the Scanner when in a JFrame
+    public static String getInput() throws InterruptedException {
+
+        try {
+            Thread.sleep(100);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        KeyEventDispatcher dispatcher = new KeyEventDispatcher() {
+            // Anonymous class invoked from EDT
+            public boolean dispatchKeyEvent(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                    latch.countDown();
+                return false;
+            }
+        };
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(dispatcher);
+        latch.await();  // current thread waits here until countDown() is called
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(dispatcher);
+        String[] wordsArray = ta.getText().split("\\s+");
+        String lastWord = wordsArray[wordsArray.length - 1];
+        return lastWord;
+    }
+
     public static void main(String[] args) throws InterruptedException, IOException {
+
+        // MAKES THE PROGRAM OPEN IN AN APPLET - This block was found and slightly modified from StackExchange.
+        JFrame frame = new JFrame();
+        KeyListener kl = new KeyListener() {
+            public void keyTyped(KeyEvent e) {
+
+            }
+
+            public void keyPressed(KeyEvent e) {
+
+                try {
+                    if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                        serialPort.writeString("dg\n");
+                        //System.out.println("dg\n");
+                    }
+
+                    if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                        serialPort.writeString("ag\n");
+                        //System.out.println("ag\n");
+                    }
+
+                    if (e.getKeyCode() == KeyEvent.VK_UP) {
+                        serialPort.writeString("wg\n");
+                        //System.out.println("wg\n");
+                    }
+
+                    if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                        serialPort.writeString("sg\n");
+                        //System.out.println("sg\n");
+                    }
+
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        pass = true;
+                    }
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+            public void keyReleased(KeyEvent e) {
+
+                try {
+                    if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                        serialPort.writeString("ds\n");
+                        //System.out.println("ds\n");
+                    }
+
+                    if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                        serialPort.writeString("as\n");
+                        //System.out.println("as\n");
+                    }
+
+                    if (e.getKeyCode() == KeyEvent.VK_UP) {
+                        serialPort.writeString("ws\n");
+                        //System.out.println("ws\n");
+                    }
+
+                    if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                        serialPort.writeString("ss\n");
+                        //System.out.println("ss\n");
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+
+            }
+        };
+
+        frame.add(new JLabel("Whiteboard Printer"), BorderLayout.CENTER);
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        ta = new JTextArea(50, 100);
+
+        TextAreaOutputStream taos = new TextAreaOutputStream(ta, 100);
+        PrintStream ps = new PrintStream(taos);
+        System.setOut(ps);
+        System.setErr(ps);
+
+        frame.add(new JScrollPane(ta));
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
 
         // Test cases hardcoded in.
         File img1 = new File("images/Test3.jpg"); // Complex Geometric Shape - [1; rgb48]
@@ -133,7 +253,7 @@ public class ArduinoCommunicator {
             System.out.println("RGB SENSITIVITY, enter \"Y\". Enter anything else to continue as a normal user.");
             System.out.println("else to continue as a normal user.\n");
 
-            String setting = scanner.nextLine();
+            String setting = getInput();
 
             if (setting.equals("Y") || setting.equals("y")) {
                 advanced = true;
@@ -169,7 +289,7 @@ public class ArduinoCommunicator {
 
             while (invalid) {
 
-                String input = scanner.nextLine();
+                String input = getInput();
 
                 switch (input) {
                     case "1":
@@ -235,7 +355,7 @@ public class ArduinoCommunicator {
 
                 while (true) {
                     try {
-                        String numString = scanner.nextLine();
+                        String numString = getInput();
                         int num = Integer.parseInt(numString);
 
                         if (num < 0 || num > 255) {
@@ -270,7 +390,7 @@ public class ArduinoCommunicator {
 
                 while (true) {
                     try {
-                        String numString = scanner.nextLine();
+                        String numString = getInput();
                         int num = Integer.parseInt(numString);
 
                         if (num % 2 != 1) {
@@ -303,7 +423,7 @@ public class ArduinoCommunicator {
             System.out.println("\nWould you like to receive coordinate data from the Arduino? Enter \"Y\"");
             System.out.println("to accept, anything else for no.\n");
 
-            String receive = scanner.nextLine();
+            String receive = getInput();
 
             if (!receive.equals("Y") && !receive.equals("y")) {
                 receiveData = false;
@@ -321,7 +441,7 @@ public class ArduinoCommunicator {
         System.out.println("Simply try restarting communication by restarting the" +
                 " program or reconnecting the hardware.");
         System.out.println("\nPress ENTER to continue.\n");
-        scanner.nextLine();
+        getInput();
         System.out.println("Attemping Serial Communication\n");
 
         for (int i = 0; i < 10; i++) {
@@ -376,6 +496,8 @@ public class ArduinoCommunicator {
             xPrime = ((DRAW_WINDOW_HEIGHT - ipr * picHeight) / 2) / ipr;
         }
 
+        String penString;
+
         // Filling the buffer - we store the buffer processor-side because there's a limit to the size
         // of the serial communication buffer for the Arduino (64 bytes)
         while (pathIndex < pathLength) {
@@ -383,18 +505,24 @@ public class ArduinoCommunicator {
             Path.Point<Picture.Pixel, Boolean> point = pathList.get(pathIndex);
             String toSend = "";
 
+            if (pathList.get(pathIndex).getValue()) {
+                penString = "d";
+            } else {
+                penString = "u";
+            }
+
             if (pathIndex == 0) { // configuration block - ipr and x' and y'
                 toSend = toSend + "q" + ipr + "\n";
                 buffer.add(toSend);
                 System.out.print("");
                 toSend = "";
-                toSend = toSend + "c" + (int)xPrime + "." + (int)yPrime + "\n";
+                toSend = toSend + "c" + (int)xPrime + "." + (int)yPrime + "." + penString + "\n";
                 buffer.add(toSend);
                 ready = false;
                 System.out.print(""); // NEED THIS HERE TO RESOLVE A MULTITHREAD PROCESSING GLITCH
 
             } else if (pathIndex == pathLength - 1) {
-                toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "\n";
+                toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "." + penString + "\n";
                 buffer.add(toSend);
                 System.out.print("");
                 buffer.add("z");
@@ -402,7 +530,7 @@ public class ArduinoCommunicator {
                 System.out.print("");
 
             } else {
-                toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "\n";
+                toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "." + penString + "\n";
                 buffer.add(toSend);
                 ready = false;
                 System.out.print("");

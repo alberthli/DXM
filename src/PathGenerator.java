@@ -15,6 +15,10 @@
  *              - [PROBABLY NOT] Come up with way to use true Euclidean distance instead of square approximation
  *              - [MAYBE] Improve the filterSubIsland method performance! For large subislands or single large islands
  *                this method takes an obscene amount of time to check the subisland.
+ *      v1.0.4 - 10/24/16
+ *          - FIXED
+ *              - Bug that caused some points not to be drawn if the pen moved to them but immediately was programmed
+ *                to jump to the next point without drawing
  *      v1.0.3 - 10/22/16
  *          - ADDED
  *              - Origin is now always the last point in path
@@ -1176,6 +1180,7 @@ public class PathGenerator {
                     mark(curr, next);
                 } else {
                     path.addPoint(next, false);
+                    path.addPoint(next, true);
                 }
 
                 setCursorX(next.getX());
@@ -1193,6 +1198,8 @@ public class PathGenerator {
 
         // Returns to the origin at the end
         path.addPoint(new Picture().new Pixel(0, 0), false);
+
+
 
         return path;
     }
