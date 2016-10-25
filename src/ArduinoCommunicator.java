@@ -26,6 +26,7 @@
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +41,7 @@ import jssc.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.text.DefaultCaret;
 
 public class ArduinoCommunicator {
 
@@ -148,30 +150,57 @@ public class ArduinoCommunicator {
         // MAKES THE PROGRAM OPEN IN AN APPLET - This block was found and slightly modified from StackExchange.
         JFrame frame = new JFrame();
         KeyListener kl = new KeyListener() {
+
             public void keyTyped(KeyEvent e) {
-
-            }
-
-            public void keyPressed(KeyEvent e) {
-
                 try {
                     if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                        serialPort.writeString("dg\n");
+                        serialPort.writeString("d");
                         //System.out.println("dg\n");
                     }
 
                     if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                        serialPort.writeString("ag\n");
+                        serialPort.writeString("a");
                         //System.out.println("ag\n");
                     }
 
                     if (e.getKeyCode() == KeyEvent.VK_UP) {
-                        serialPort.writeString("wg\n");
+                        serialPort.writeString("w");
                         //System.out.println("wg\n");
                     }
 
                     if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                        serialPort.writeString("sg\n");
+                        serialPort.writeString("s");
+                        //System.out.println("sg\n");
+                    }
+
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        pass = true;
+                    }
+
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+            public void keyPressed(KeyEvent e) {
+                try {
+                    if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                        serialPort.writeString("d");
+                        //System.out.println("dg\n");
+                    }
+
+                    if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                        serialPort.writeString("a");
+                        //System.out.println("ag\n");
+                    }
+
+                    if (e.getKeyCode() == KeyEvent.VK_UP) {
+                        serialPort.writeString("w");
+                        //System.out.println("wg\n");
+                    }
+
+                    if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                        serialPort.writeString("s");
                         //System.out.println("sg\n");
                     }
 
@@ -185,39 +214,16 @@ public class ArduinoCommunicator {
             }
 
             public void keyReleased(KeyEvent e) {
-
-                try {
-                    if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                        serialPort.writeString("ds\n");
-                        //System.out.println("ds\n");
-                    }
-
-                    if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                        serialPort.writeString("as\n");
-                        //System.out.println("as\n");
-                    }
-
-                    if (e.getKeyCode() == KeyEvent.VK_UP) {
-                        serialPort.writeString("ws\n");
-                        //System.out.println("ws\n");
-                    }
-
-                    if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                        serialPort.writeString("ss\n");
-                        //System.out.println("ss\n");
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-
+                // NO EFFECT
             }
         };
 
         frame.add(new JLabel("Whiteboard Printer"), BorderLayout.CENTER);
-
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         ta = new JTextArea(50, 100);
+        DefaultCaret caret = (DefaultCaret)ta.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
         TextAreaOutputStream taos = new TextAreaOutputStream(ta, 100);
         PrintStream ps = new PrintStream(taos);
@@ -225,7 +231,6 @@ public class ArduinoCommunicator {
         System.setErr(ps);
 
         frame.add(new JScrollPane(ta));
-
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
@@ -249,7 +254,7 @@ public class ArduinoCommunicator {
         // Selection menu for samples. Will work on ability to pass in images at will.
         while (true) {
 
-            System.out.println("\nIf you are an advanced user who wants to modify MARKER THICKNESS or ");
+            System.out.println("If you are an advanced user who wants to modify MARKER THICKNESS or ");
             System.out.println("RGB SENSITIVITY, enter \"Y\". Enter anything else to continue as a normal user.");
             System.out.println("else to continue as a normal user.\n");
 
@@ -264,7 +269,7 @@ public class ArduinoCommunicator {
 
             }
 
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 3; i++) {
                 try {
                     Thread.sleep(200);
                 } catch (Exception e) {
@@ -349,7 +354,7 @@ public class ArduinoCommunicator {
             if (advanced) {
 
                 System.out.println("\n\n[ADVANCED]");
-                System.out.println("\nChoose the RGB SENSITIVITY. This is a number between 0 and 255");
+                System.out.println("Choose the RGB SENSITIVITY. This is a number between 0 and 255");
                 System.out.println("that determines the RGB values that will cause a pixel to be");
                 System.out.println("included in the drawing.\n");
 
@@ -366,7 +371,7 @@ public class ArduinoCommunicator {
                         rgbSensitivityThreshold = num;
                         System.out.println("\nRGB Sensitivity set to: " + rgbSensitivityThreshold + "\n");
 
-                        for (int i = 0; i < 5; i++) {
+                        for (int i = 0; i < 3; i++) {
                             try {
                                 Thread.sleep(200);
                             } catch (Exception e) {
@@ -384,9 +389,9 @@ public class ArduinoCommunicator {
                 }
 
                 System.out.println("\n\n[ADVANCED]");
-                System.out.println("\nChoose the MARKER THICKNESS. This is an ODD integer that controls");
+                System.out.println("Choose the MARKER THICKNESS. This is an ODD integer that controls");
                 System.out.println("how thick the marker is, and thus controls how many pixels are");
-                System.out.println("traversed by the marker, changing the path.\n");
+                System.out.println("traversed by the marker, changing the path. [RECOMMENDED: 5]\n");
 
                 while (true) {
                     try {
@@ -394,14 +399,14 @@ public class ArduinoCommunicator {
                         int num = Integer.parseInt(numString);
 
                         if (num % 2 != 1) {
-                            System.out.println("\nPlease enter an ODD INTEGER (recommended value is 5)!\n");
+                            System.out.println("\nPlease enter an ODD INTEGER! [RECOMMENDED: 5]\n");
                             continue;
                         }
 
                         thickness = num;
                         System.out.println("\nMarker Thickness set to: " + thickness + "\n");
 
-                        for (int i = 0; i < 5; i++) {
+                        for (int i = 0; i < 3; i++) {
                             try {
                                 Thread.sleep(200);
                             } catch (Exception e) {
@@ -436,24 +441,6 @@ public class ArduinoCommunicator {
 
         }
 
-        System.out.println("\nNOTE: If the program doesn't work, there is probably a synchronization issue stemming" +
-                " from issues with serial communication.");
-        System.out.println("Simply try restarting communication by restarting the" +
-                " program or reconnecting the hardware.");
-        System.out.println("\nPress ENTER to continue.\n");
-        getInput();
-        System.out.println("Attemping Serial Communication\n");
-
-        for (int i = 0; i < 5; i++) {
-            try {
-                Thread.sleep(200);
-            } catch (Exception e) {
-
-            }
-            System.out.print(".");
-        }
-        System.out.println();
-
         // Find all possible ports
         String[] portNames = SerialPortList.getPortNames();
 
@@ -467,6 +454,17 @@ public class ArduinoCommunicator {
             }
             return;
         }
+
+        System.out.print("\nPROCESSING DATA");
+        for (int i = 0; i < 3; i++) {
+            try {
+                Thread.sleep(200);
+            } catch (Exception e) {
+
+            }
+            System.out.print(".");
+        }
+        System.out.println("\n");
 
         // Block that generates the path
         Picture pic = new Picture(image, pixelThresholdPercent, rgbSensitivityThreshold);
@@ -552,6 +550,8 @@ public class ArduinoCommunicator {
         while (index < portNames.length) {
             try {
 
+                System.out.println("\nAttemping Serial Communication...\n");
+
                 // Finding valid port + serial communication settings
                 serialPort = new SerialPort(portNames[index]);
                 serialPort.openPort();
@@ -561,22 +561,38 @@ public class ArduinoCommunicator {
 
                 // If the program has reached this point, the port connection is almost certainly successful
                 System.out.println("\n***** Port Connection Successful! *****");
-                System.out.print("\n     SENDING DATA");
-
-                for (int i = 0; i < 5; i++) {
-                    try {
-                        Thread.sleep(200);
-                    } catch (Exception e) {
-
-                    }
-                    System.out.print(".");
-                }
-                System.out.println("\n");
 
                 // waits until the Arduino is ready before sending data
-                while (!ready) {
+                while(!ready) {
                     System.out.print(""); // syncs multithread processing
                 }
+
+                System.out.println("\nCalibrate the marker's origin using the WASD keys! Try to place the marker");
+                System.out.println("about 1 inch from each of the sides. DO NOT HOLD DOWN THE KEYS! LIGHTLY TAP");
+                System.out.println("THEM OR THE PRINTER WILL STOP. If this happens, simply restart the printer.");
+                System.out.println("\nPress ENTER to continue.");
+                ta.addKeyListener(kl);
+
+                while(!pass) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    int len = ta.getDocument().getLength();
+                    ta.setCaretPosition(len);
+                }
+
+                ta.removeKeyListener(kl);
+
+                System.out.println("\nNOTE: If the program doesn't work, there is probably a synchronization issue stemming" +
+                        " from issues with serial communication.");
+                System.out.println("Simply try restarting communication by restarting the" +
+                        " program or reconnecting the hardware.");
+                System.out.println("\nPress ENTER to begin printing.\n");
+                getInput();
+
+                System.out.println("Printing...\n");
 
                 // communicates instructions one at a time to the Arduino. only communicates as quickly as the
                 // the Arduino is ready to receive (that's the purpose of the ready variable).
@@ -601,6 +617,15 @@ public class ArduinoCommunicator {
             }
 
             System.out.println("\n***** Serial Communication Complete! *****");
+
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+
             break;
 
         }
