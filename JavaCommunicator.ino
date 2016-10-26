@@ -63,13 +63,13 @@ void loop() {
       
       // These 4 cases are only for the initial marker calibration
       case 'w':
-        xServo.write(0);
+        xServo.write(180);
         delay(100);
         xServo.write(90);
         break;
 
       case 's':
-        xServo.write(180);
+        xServo.write(0);
         delay(100);
         xServo.write(90);
         break;
@@ -143,11 +143,11 @@ void loop() {
           
           long time = (long)((2000 * ipr * axd) / maxSpeedDoubled) + 1;
           
-          if (xDist < 0) { // pen moves up, send low signal
-            xInstr = 0;
-            
-          } else { // pen moves down, send high signal
+          if (xDist < 0) { // pen moves up, send high signal
             xInstr = 180;
+            
+          } else { // pen moves down, send low signal
+            xInstr = 0;
             
           }
 
@@ -174,11 +174,11 @@ void loop() {
           
           long time = (long)((2000 * ipr * ayd) / maxSpeedDoubled) + 1;
           
-          if (xDist < 0) { // pen moves up, send low signal
-            xInstr = 90 * (1 - ((double)axd / (double)ayd));
-            
-          } else { // pen moves down, send high signal
+          if (xDist < 0) { // pen moves up, send high signal
             xInstr = 90 * (1 + ((double)axd / (double)ayd));
+            
+          } else { // pen moves down, send low signal
+            xInstr = 90 * (1 - ((double)axd / (double)ayd));
             
           }
 
@@ -238,7 +238,7 @@ void loop() {
         if (xPrime > yPrime) {
           long time = (long)((2000 * ipr * xPrime) / maxSpeedDoubled) + 1;
           
-          xInstr = 180;
+          xInstr = 0;
           yInstr = 90 * (1 + ((double)yPrime / (double)xPrime));
 
           xServo.write(xInstr);
@@ -253,7 +253,7 @@ void loop() {
         } else {
           long time = (long)((2000 * ipr * yPrime) / maxSpeedDoubled) + 1;
           
-          xInstr = 90 * (1 + ((double)xPrime / (double)yPrime));
+          xInstr = 90 * (1 - ((double)xPrime / (double)yPrime));
           yInstr = 180;
 
           xServo.write(xInstr);
@@ -307,7 +307,7 @@ void loop() {
         // Moves the pen back to the absolute origin.
         if (xPrime > yPrime) {
           long time = (long)((2000 * ipr * xPrime) / maxSpeedDoubled) + 1;
-          xInstr = 0;
+          xInstr = 180;
           yInstr = 90 * (1 - ((double)yPrime / (double)xPrime));
 
           xServo.write(xInstr);
@@ -319,7 +319,7 @@ void loop() {
           
         } else {
           long time = (long)((2000 * ipr * yPrime) / maxSpeedDoubled) + 1;
-          xInstr = 90 * (1 - ((double)xPrime / (double)yPrime));
+          xInstr = 90 * (1 + ((double)xPrime / (double)yPrime));
           yInstr = 0;
 
           xServo.write(xInstr);
