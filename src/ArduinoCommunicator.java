@@ -281,7 +281,8 @@ public class ArduinoCommunicator {
                 }
                 System.out.print(".");
             }
-
+            System.out.println();
+            System.out.println("________________________________________________________");
             System.out.println();
 
             System.out.println("\nLook through the menu and enter the number you'd like to print: \n");
@@ -357,6 +358,9 @@ public class ArduinoCommunicator {
 
             if (advanced) {
 
+                System.out.println();
+                System.out.println("________________________________________________________");
+                System.out.println();
                 System.out.println("\n[ADVANCED]");
                 System.out.println("Choose the RGB SENSITIVITY. This is a number between 0 and 255");
                 System.out.println("that determines the RGB values that will cause a pixel to be");
@@ -392,6 +396,9 @@ public class ArduinoCommunicator {
                     }
                 }
 
+                System.out.println();
+                System.out.println("________________________________________________________");
+                System.out.println();
                 System.out.println("\n[ADVANCED]");
                 System.out.println("Choose the MARKER THICKNESS. This is an ODD integer that controls");
                 System.out.println("how thick the marker is, and thus controls how many pixels are");
@@ -429,16 +436,25 @@ public class ArduinoCommunicator {
 
             }
 
-            System.out.println("\nWould you like to receive coordinate data from the Arduino? Enter \"Y\"");
+            System.out.println();
+            System.out.println("________________________________________________________");
+            System.out.println();
+            System.out.println("Would you like to receive coordinate data from the Arduino? Enter \"Y\"");
             System.out.println("to accept, anything else for no.\n");
 
             String receive = getInput();
 
             if (!receive.equals("Y") && !receive.equals("y")) {
                 receiveData = false;
-                System.out.println("\nCoordinate Data Deactivated.");
+                System.out.println();
+                System.out.println("________________________________________________________");
+                System.out.println();
+                System.out.println("Coordinate Data Deactivated.");
             } else {
-                System.out.println("\nCoordinate Data Activated.");
+                System.out.println();
+                System.out.println("________________________________________________________");
+                System.out.println();
+                System.out.println("Coordinate Data Activated.");
             }
 
             if (moveOn) break;
@@ -574,9 +590,13 @@ public class ArduinoCommunicator {
                     System.out.print(""); // syncs multithread processing
                 }
 
-                System.out.println("\nCalibrate the marker's origin using the ARROW KEYS! Try to place the marker");
-                System.out.println("about 1 inch from each of the sides. DO NOT HOLD DOWN THE KEYS! LIGHTLY TAP");
-                System.out.println("THEM OR THE PRINTER WILL STOP. If this happens, simply restart the printer.");
+                System.out.println("________________________________________________________");
+                System.out.println();
+                System.out.println("[IMPORTANT]");
+                System.out.println("Calibrate the marker's origin using the ARROW KEYS if needed. Try to place the marker");
+                System.out.println("about 1 inch from each of the sides.");
+                System.out.println("\n*** DO NOT HOLD DOWN THE KEYS! LIGHTLY TAP THEM OR THE PRINTER WILL STOP WORKING. ***");
+                System.out.println("If this happens, simply restart the printer.");
                 System.out.println("\nPress ENTER to continue.");
                 ta.addKeyListener(kl);
 
@@ -592,14 +612,19 @@ public class ArduinoCommunicator {
 
                 ta.removeKeyListener(kl);
 
+                System.out.println("________________________________________________________");
+                System.out.println();
                 System.out.println("NOTE: If the program doesn't work, there is probably a synchronization issue stemming" +
                         " from issues with serial communication.");
                 System.out.println("Simply try restarting communication by restarting the" +
-                        " program or reconnecting the hardware. IF YOU SEE THE SERVOS STALLING");
-                System.out.println("UNPLUG TO AVOID DAMAGE TO THE ELECTRONICS!");
+                        " program or reconnecting the hardware.");
+                System.out.println("\n*** IF YOU SEE THE SERVOS STALLING UNPLUG TO AVOID DAMAGE TO THE ELECTRONICS! ***");
                 System.out.println("\nPress ENTER to begin printing.\n");
                 getInput();
 
+                System.out.println();
+                System.out.println("________________________________________________________");
+                System.out.println();
                 System.out.println("***** Printing... *****\n");
 
                 // communicates instructions one at a time to the Arduino. only communicates as quickly as the
@@ -612,7 +637,9 @@ public class ArduinoCommunicator {
                         bufferIndex++;
                     }
 
+                    ta.setCaretPosition(ta.getDocument().getLength());
                     if (done) break;
+
                 }
 
                 serialPort.closePort();
@@ -624,10 +651,14 @@ public class ArduinoCommunicator {
                 }
             }
 
+            System.out.println();
+            System.out.println("________________________________________________________");
+            System.out.println();
             System.out.println("\nSerial Communication Complete! Enjoy your print!");
+            System.out.println("This window will close in 5 seconds.");
 
             try {
-                Thread.sleep(1000);
+                Thread.sleep(5000);
             } catch (Exception e) {
                 e.printStackTrace();
             }
