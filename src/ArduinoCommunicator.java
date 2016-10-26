@@ -260,8 +260,7 @@ public class ArduinoCommunicator {
             System.out.println("Welcome to the MarkerBot Control Interface!");
 
             System.out.println("\nIf you are an advanced user who wants to modify MARKER THICKNESS or ");
-            System.out.println("RGB SENSITIVITY, enter \"Y\". Enter anything else to continue as a normal user.");
-            System.out.println("Press anything else to continue as a normal user.\n");
+            System.out.println("RGB SENSITIVITY, enter \"Y\". Enter anything else to continue as a normal user.\n");
 
             String setting = getInput();
 
