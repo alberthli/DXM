@@ -10,6 +10,7 @@
  *      v1.1.0 - 10/25/16
  *          - Added in ability to calibrate marker position before printing begins
  *          - Changed menu slightly
+ *          - Fixed initial values for marker up/down positioning
  *      v1.0.1 - 10/24/16
  *          - Added in message warning about serial communication issues.
  *          - Added in cheesy loading dots for my own amusement
@@ -258,6 +259,8 @@ public class ArduinoCommunicator {
         while (true) {
 
             System.out.println("Welcome to the MarkerBot Control Interface!");
+
+            System.out.println("\nTo enter inputs, type what you want to send and press ENTER afterwards.");
 
             System.out.println("\nIf you are an advanced user who wants to modify MARKER THICKNESS or ");
             System.out.println("RGB SENSITIVITY, enter \"Y\". Enter anything else to continue as a normal user.\n");
@@ -581,6 +584,7 @@ public class ArduinoCommunicator {
                 serialPort.setParams(9600,8,1,0);
                 serialPort.setFlowControlMode(SerialPort.FLOWCONTROL_XONXOFF_IN | SerialPort.FLOWCONTROL_XONXOFF_OUT);
                 serialPort.addEventListener(new PortReader(), SerialPort.MASK_RXCHAR);
+                serialPort.writeString("y");
 
                 // If the program has reached this point, the port connection is almost certainly successful
                 System.out.println("Port Connection Successful!");
@@ -629,6 +633,10 @@ public class ArduinoCommunicator {
 
                 // communicates instructions one at a time to the Arduino. only communicates as quickly as the
                 // the Arduino is ready to receive (that's the purpose of the ready variable).
+
+                ta.setCaretPosition(ta.getDocument().getLength());
+
+
                 while(true) {
                     System.out.print("");
                     if (bufferIndex < buffer.size() && ready) {
@@ -636,10 +644,7 @@ public class ArduinoCommunicator {
                         serialPort.writeString(buffer.get(bufferIndex));
                         bufferIndex++;
                     }
-
-                    ta.setCaretPosition(ta.getDocument().getLength());
                     if (done) break;
-
                 }
 
                 serialPort.closePort();

@@ -12,6 +12,8 @@ int x = 0;
 int y = 0;
 int xPrime = 0;
 int yPrime = 0;
+int neutralPos = 145;
+int downPos = 165;
 
 boolean firsttime = true;
 float ipr;
@@ -19,9 +21,10 @@ int maxSpeedDoubled = 5; // inches/second lateral speed doubled.
 
 void setup() {
   // FIX ATTACHMENTS AND STUFF
-  xServo.attach(5); // pin 5 is for the x servo
+  xServo.attach(5); // pin 5 ips for the x servo
   yServo.attach(6); // pin 6 is for the y servo
   penServo.attach(3); // pin 3 is for the pen servo
+  penServo.write(neutralPos); 
   Serial.begin(9600);
 }
 
@@ -31,6 +34,7 @@ void loop() {
   if (firsttime) {
     firsttime = false;
     Serial.print(">r\r");
+    penServo.write(neutralPos); 
   }
   
   // Code
@@ -53,6 +57,10 @@ void loop() {
     // Cases for the incoming bytes
     switch (incomingByte) {
 
+      case 'y':
+        penServo.write(neutralPos); 
+        break;
+      
       // These 4 cases are only for the initial marker calibration
       case 'w':
         xServo.write(0);
@@ -117,10 +125,10 @@ void loop() {
 
           // CHANGE THE PINSTR VALUES LATER
           if (incomingByte == 'u') {
-            pInstr = 90;
+            pInstr = neutralPos;
             pString = "PEN UP";
           } else if (incomingByte == 'd') {
-            pInstr = 0;
+            pInstr = downPos;
             pString = "PEN DOWN";
           }
         
@@ -235,7 +243,7 @@ void loop() {
 
           xServo.write(xInstr);
           yServo.write(yInstr);
-          penServo.write(90); // CHANGE THIS VALUE LATER
+          penServo.write(neutralPos); 
           delay(time);
           xServo.write(90);
           yServo.write(90);
@@ -250,7 +258,7 @@ void loop() {
 
           xServo.write(xInstr);
           yServo.write(yInstr);
-          penServo.write(90); // CHANGE THIS VALUE LATER!!
+          penServo.write(neutralPos); 
           delay(time);
           xServo.write(90);
           yServo.write(90);
@@ -304,7 +312,7 @@ void loop() {
 
           xServo.write(xInstr);
           yServo.write(yInstr);
-          penServo.write(90); // CHANGE THIS LATER
+          penServo.write(neutralPos); 
           delay(time);
           xServo.write(90);
           yServo.write(90);
@@ -316,7 +324,7 @@ void loop() {
 
           xServo.write(xInstr);
           yServo.write(yInstr);
-          penServo.write(90); // CHANGE THIS LATER
+          penServo.write(neutralPos); 
           delay(time);
           xServo.write(90);
           yServo.write(90);
