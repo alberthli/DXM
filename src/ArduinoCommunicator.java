@@ -36,7 +36,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
 
 import javafx.application.Platform;
@@ -252,8 +251,6 @@ public class ArduinoCommunicator {
         int thickness = 5; // fairly static, not sure if I will change it
         double rgbSensitivityThreshold = 48; // just a default value, will be changed in the code
         BufferedImage image = null;
-
-        Scanner scanner = new Scanner(System.in);
 
         // Selection menu for samples. Will work on ability to pass in images at will.
         while (true) {
