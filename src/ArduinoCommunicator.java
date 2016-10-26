@@ -224,7 +224,7 @@ public class ArduinoCommunicator {
         frame.add(new JLabel("Whiteboard Printer"), BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        ta = new JTextArea(50, 100);
+        ta = new JTextArea(50, 150);
         DefaultCaret caret = (DefaultCaret)ta.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
@@ -261,7 +261,7 @@ public class ArduinoCommunicator {
 
             System.out.println("\nIf you are an advanced user who wants to modify MARKER THICKNESS or ");
             System.out.println("RGB SENSITIVITY, enter \"Y\". Enter anything else to continue as a normal user.");
-            System.out.println("else to continue as a normal user.\n");
+            System.out.println("Press anything else to continue as a normal user.\n");
 
             String setting = getInput();
 
@@ -596,7 +596,8 @@ public class ArduinoCommunicator {
                 System.out.println("NOTE: If the program doesn't work, there is probably a synchronization issue stemming" +
                         " from issues with serial communication.");
                 System.out.println("Simply try restarting communication by restarting the" +
-                        " program or reconnecting the hardware.");
+                        " program or reconnecting the hardware. IF YOU SEE THE SERVOS STALLING");
+                System.out.println("UNPLUG TO AVOID DAMAGE TO THE ELECTRONICS!");
                 System.out.println("\nPress ENTER to begin printing.\n");
                 getInput();
 
