@@ -69,8 +69,10 @@ public class Animator extends JPanel implements ActionListener {
             File img29 = new File("images/Test29.jpg"); // Cool Design again
             File img30 = new File("images/Test30.jpg"); // Circle Design
             File img31 = new File("images/Test31.jpeg"); // Square Design
+            File img32 = new File("images/Test32.jpg"); // Dickbutt
 
             File real1 = new File("images/Real1.jpg"); // Plug in wall
+            File real2 = new File("images/Real2.jpg"); // Cardboard Box
 
             // VERY IMPORTANT VARIABLES!!!
             // - pixelThresholdPercent determines what size island should be filtered (if it's smaller in pixel
@@ -81,12 +83,12 @@ public class Animator extends JPanel implements ActionListener {
             // probably closer to a circle, but we can use squares to approximate it for sufficiently small sizes.
             double pixelThresholdPercent = .01;
             double rgbSensitivityThreshold = 48;
-            int thickness = 3;
+            int thickness = 5;
 
             int timeDelay = 1; // Delay between line segments drawn in ms
 
             // Which image is being drawn - manually change this because this program is for visualization only
-            File applyToAllTests = img14;
+            File applyToAllTests = img2;
 
             // Don't mess with anything in this block.
             BufferedImage imagePathTest = ImageIO.read(applyToAllTests);

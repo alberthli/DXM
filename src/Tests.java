@@ -87,16 +87,18 @@ public class Tests {
         File img29 = new File("images/Test29.jpg"); // Cool Design again
         File img30 = new File("images/Test30.jpg"); // Circle Design
         File img31 = new File("images/Test31.jpeg"); // Square Design
+        File img32 = new File("images/Test32.jpg"); // Dickbutt
 
         File real1 = new File("images/Real1.jpg"); // Plug in wall
+        File real2 = new File("images/Real2.jpg"); // Cardboard Box
 
         // Test Parameters:
         double pixelThresholdPercent = .01;
-        double rgbSensitivityThreshold = 48;
+        double rgbSensitivityThreshold = 192;
 
         // If you want to do all the tests on the same image, change this parameter. Otherwise,
         // manually change all the tests below.
-        File applyToAllTests = img14;
+        File applyToAllTests = img19;
 
         //************************ TESTS FOR PICTURE.JAVA *************************//
 

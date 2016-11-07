@@ -81,13 +81,15 @@ public class ArduinoCommunicator {
         public void serialEvent(SerialPortEvent event) {
             if(event.isRXCHAR() && event.getEventValue() > 0){
                 try {
+
                     byte buffer[] = serialPort.readBytes();
+
                     for (byte b: buffer) {
+
                         if (b == '>') {
                             receivingMessage = true;
                             message.setLength(0);
-                        }
-                        else if (receivingMessage == true) {
+                        } else if (receivingMessage == true) {
                             if (b == '\r') {
                                 receivingMessage = false;
                                 String toProcess = message.toString();
@@ -106,14 +108,14 @@ public class ArduinoCommunicator {
                                         }
                                     }
                                 });
-                            }
-                            else {
+                            } else {
                                 message.append((char)b);
                             }
                         }
+
                     }
-                }
-                catch (SerialPortException ex) {
+
+                } catch (SerialPortException ex) {
                     System.out.println(ex);
                     System.out.println("serialEvent");
                 }
@@ -589,6 +591,29 @@ public class ArduinoCommunicator {
                 // waits until the Arduino is ready before sending data
                 while(!ready) {
                     System.out.print(""); // syncs multithread processing
+                }
+
+                System.out.println("________________________________________________________");
+                System.out.println();
+                System.out.println("Do you need to remove the marker? Enter \"Y\" to eject the marker,");
+                System.out.println("anything else to ignore.\n");
+
+                String receive = getInput();
+
+                if(receive.equals("Y") || receive.equals("y")) {
+
+                    serialPort.writeString("k");
+                    receive = "";
+
+                    System.out.println("The marker has been ejected. To reinsert, GENTLY rest it on the rails");
+                    System.out.println("and enter \"Y\".\n");
+
+                    while(!receive.equals("y") && !receive.equals("Y")) {
+                        receive = getInput();
+                    }
+
+                    serialPort.writeString("j");
+
                 }
 
                 System.out.println("________________________________________________________");
