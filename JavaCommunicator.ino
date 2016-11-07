@@ -12,8 +12,8 @@ int x = 0;
 int y = 0;
 int xPrime = 0;
 int yPrime = 0;
-int neutralPos = 145;
-int downPos = 165;
+int neutralPos = 96;
+int downPos = 116;
 
 boolean firsttime = true;
 float ipr;
@@ -24,6 +24,7 @@ void setup() {
   xServo.attach(5); // pin 5 ips for the x servo
   yServo.attach(6); // pin 6 is for the y servo
   penServo.attach(3); // pin 3 is for the pen servo
+  penServo.write(15);
   penServo.write(neutralPos); 
   Serial.begin(9600);
 }
@@ -57,6 +58,14 @@ void loop() {
     // Cases for the incoming bytes
     switch (incomingByte) {
 
+      case 'k':
+        penServo.write(15);
+        break;
+
+      case 'j':
+        penServo.write(neutralPos);
+        break;
+      
       case 'y':
         penServo.write(neutralPos); 
         break;
