@@ -21,7 +21,7 @@ int maxSpeedDoubled = 5; // inches/second lateral speed doubled.
 
 void setup() {
   // FIX ATTACHMENTS AND STUFF
-  xServo.attach(5); // pin 5 ips for the x servo
+  xServo.attach(5); // pin 5 is for the x servo
   yServo.attach(6); // pin 6 is for the y servo
   penServo.attach(3); // pin 3 is for the pen servo
   penServo.write(15);

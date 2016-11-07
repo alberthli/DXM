@@ -247,6 +247,7 @@ public class ArduinoCommunicator {
         File img4 = new File("images/Test14.jpeg"); // overdose sign [1; rgb48]
         File img5 = new File("images/Test16.jpeg"); // Brain
         File img6 = new File("images/Test21.png"); // Thermo Diagram (better quality)
+        File img7 = new File("images/Test2.png"); // Three Lines
 
         // SETTINGS FOR THE PICTURE. I might add in capabilities to change these.
         double pixelThresholdPercent = .01;
@@ -293,7 +294,8 @@ public class ArduinoCommunicator {
             System.out.println("(3) Text Sample");
             System.out.println("(4) Interesting Sign");
             System.out.println("(5) The Brain");
-            System.out.println("(6) Thermodynamic Diagram\n");
+            System.out.println("(6) Thermodynamic Diagram");
+            System.out.println("(7) Three Lines\n");
             System.out.println("What would you like to print? Enter the number here: \n");
 
             boolean moveOn = false;
@@ -352,8 +354,16 @@ public class ArduinoCommunicator {
                         invalid = false;
                         break;
 
+                    case "7":
+                        moveOn = true;
+                        if (!advanced)
+                            rgbSensitivityThreshold = 192;
+                        image = ImageIO.read(img7);
+                        invalid = false;
+                        break;
+
                     default:
-                        System.out.println("\nERROR: Please enter a number between 1 and 6!\n");
+                        System.out.println("\nERROR: Please enter a number between 1 and 7!\n");
                         break;
                 }
             }
