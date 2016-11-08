@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Exchanger;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -59,6 +60,9 @@ public class ArduinoCommunicator {
     private static boolean advanced = false;
     private static boolean receiveData = true;
     private static boolean pass = false;
+    private static boolean freeDraw = false;
+    private static boolean inFreeDraw = false;
+    private static boolean isUp = false;
 
     // these depend on the physical dimensions of the board
     private static final double DRAW_WINDOW_WIDTH = 12; // inches
@@ -182,6 +186,25 @@ public class ArduinoCommunicator {
                         pass = true;
                     }
 
+                    if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+                        if(freeDraw) {
+                            if (isUp) {
+                                serialPort.writeString("j");
+
+                            } else {
+                                serialPort.writeString("y");
+
+                            }
+
+                            isUp = !isUp;
+                        }
+                    }
+
+                    if(e.getKeyCode() == KeyEvent.VK_Q) {
+                        if (freeDraw)
+                            inFreeDraw = false;
+                    }
+
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
@@ -211,6 +234,25 @@ public class ArduinoCommunicator {
 
                     if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                         pass = true;
+                    }
+
+                    if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
+                        if(freeDraw) {
+                            if (isUp) {
+                                serialPort.writeString("j");
+
+                            } else {
+                                serialPort.writeString("y");
+
+                            }
+
+                            isUp = !isUp;
+                        }
+                    }
+
+                    if(e.getKeyCode() == KeyEvent.VK_Q) {
+                        if (freeDraw)
+                            inFreeDraw = false;
                     }
 
                 } catch (Exception ex) {
@@ -247,11 +289,11 @@ public class ArduinoCommunicator {
         File img4 = new File("images/Test14.jpeg"); // overdose sign [1; rgb48]
         File img5 = new File("images/Test16.jpeg"); // Brain
         File img6 = new File("images/Test21.png"); // Thermo Diagram (better quality)
-        File img7 = new File("images/Test2.png"); // Three Lines
+        File img7 = new File("images/Test0.png"); // Three Lines
 
-        // SETTINGS FOR THE PICTURE. I might add in capabilities to change these.
+        // DEFAULT SETTINGS FOR THE PICTURE.
         double pixelThresholdPercent = .01;
-        int thickness = 5; // fairly static, not sure if I will change it
+        int thickness = 9; // fairly static, not sure if I will change it
         double rgbSensitivityThreshold = 48; // just a default value, will be changed in the code
         BufferedImage image = null;
 
@@ -295,7 +337,8 @@ public class ArduinoCommunicator {
             System.out.println("(4) Interesting Sign");
             System.out.println("(5) The Brain");
             System.out.println("(6) Thermodynamic Diagram");
-            System.out.println("(7) Three Lines\n");
+            System.out.println("(7) One Line");
+            System.out.println("(8) Free Draw!\n");
             System.out.println("What would you like to print? Enter the number here: \n");
 
             boolean moveOn = false;
@@ -362,13 +405,20 @@ public class ArduinoCommunicator {
                         invalid = false;
                         break;
 
+                    case "8":
+                        moveOn = true;
+                        freeDraw = true;
+                        inFreeDraw = true;
+                        invalid = false;
+                        break;
+
                     default:
-                        System.out.println("\nERROR: Please enter a number between 1 and 7!\n");
+                        System.out.println("\nERROR: Please enter a number between 1 and 8!\n");
                         break;
                 }
             }
 
-            if (advanced) {
+            if (advanced && !freeDraw) {
 
                 System.out.println();
                 System.out.println("________________________________________________________");
@@ -446,27 +496,27 @@ public class ArduinoCommunicator {
                     }
                 }
 
-            }
-
-            System.out.println();
-            System.out.println("________________________________________________________");
-            System.out.println();
-            System.out.println("Would you like to receive coordinate data from the Arduino? Enter \"Y\"");
-            System.out.println("to accept, anything else for no.\n");
-
-            String receive = getInput();
-
-            if (!receive.equals("Y") && !receive.equals("y")) {
-                receiveData = false;
                 System.out.println();
                 System.out.println("________________________________________________________");
                 System.out.println();
-                System.out.println("Coordinate Data Deactivated.");
-            } else {
-                System.out.println();
-                System.out.println("________________________________________________________");
-                System.out.println();
-                System.out.println("Coordinate Data Activated.");
+                System.out.println("Would you like to receive coordinate data from the Arduino? Enter \"Y\"");
+                System.out.println("to accept, anything else for no.\n");
+
+                String receive = getInput();
+
+                if (!receive.equals("Y") && !receive.equals("y")) {
+                    receiveData = false;
+                    System.out.println();
+                    System.out.println("________________________________________________________");
+                    System.out.println();
+                    System.out.println("Coordinate Data Deactivated.");
+                } else {
+                    System.out.println();
+                    System.out.println("________________________________________________________");
+                    System.out.println();
+                    System.out.println("Coordinate Data Activated.");
+                }
+
             }
 
             if (moveOn) break;
@@ -476,8 +526,8 @@ public class ArduinoCommunicator {
         // Find all possible ports
         String[] portNames = SerialPortList.getPortNames();
 
-        if (portNames.length == 0) {
-            System.out.println("\nERROR: There are no serial-ports! Make sure your connection is secure!");
+        if(portNames.length == 0) {
+            System.out.println("\nERROR: There are no serial ports! Make sure your connection is secure!");
             System.out.println("Press Enter to exit.");
             try {
                 getInput();
@@ -488,96 +538,101 @@ public class ArduinoCommunicator {
             return;
         }
 
-        System.out.print("\nPROCESSING DATA! PLEASE BE PATIENT");
-        for (int i = 0; i < 3; i++) {
-            try {
-                Thread.sleep(200);
-            } catch (Exception e) {
-
-            }
-            System.out.print(".");
-        }
-        System.out.println("\n");
-
-        // Block that generates the path
-        Picture pic = new Picture(image, pixelThresholdPercent, rgbSensitivityThreshold);
-        int subIslandPixelThreshold = pic.getPixelThreshold();
-        PathGenerator pg = new PathGenerator(pic, thickness, subIslandPixelThreshold);
-        Path path = pg.makePath();
-        ArrayList<Path.Point<Picture.Pixel, Boolean>> pathList = path.getPath();
-
-        // useful variables
-        int pathLength = pathList.size();
-        int pathIndex = 0;
-        int picHeight = pic.getPicture().length;
-        int picWidth = pic.getPicture()[0].length;
-        double xPrime; // x' and y' are the adjusted coordinates for the starting position of the marker after centering
-        double yPrime;
-        double ipr; // inch-pixel ratio
         ArrayList<String> buffer = new ArrayList<>(); // the buffer object that will hold the path instructions
 
-        // Calculating inch-pixel ratio and x' and y' (remember x and y are using matrix coordinates)
-        if (((double)picWidth) / ((double)picHeight) < DRAW_WINDOW_WIDTH / DRAW_WINDOW_HEIGHT) {
-            ipr = DRAW_WINDOW_HEIGHT / (double)picHeight;
-            yPrime = ((DRAW_WINDOW_WIDTH - ipr * picWidth) / 2) / ipr;
-            xPrime = ((DRAW_WINDOW_HEIGHT - ipr * picHeight) / 2) / ipr;
-        } else {
-            ipr = DRAW_WINDOW_WIDTH / (double)picWidth;
-            yPrime = ((DRAW_WINDOW_WIDTH - ipr * picWidth) / 2) / ipr;
-            xPrime = ((DRAW_WINDOW_HEIGHT - ipr * picHeight) / 2) / ipr;
-        }
+        if(!freeDraw) {
+            System.out.print("\nPROCESSING DATA! PLEASE BE PATIENT");
+            for (int i = 0; i < 3; i++) {
+                try {
+                    Thread.sleep(200);
+                } catch (Exception e) {
 
-        String penString;
+                }
+                System.out.print(".");
+            }
+            System.out.println("\n");
 
-        // Filling the buffer - we store the buffer processor-side because there's a limit to the size
-        // of the serial communication buffer for the Arduino (64 bytes)
-        while (pathIndex < pathLength) {
 
-            Path.Point<Picture.Pixel, Boolean> point = pathList.get(pathIndex);
-            String toSend = "";
+            // Block that generates the path
+            Picture pic = new Picture(image, pixelThresholdPercent, rgbSensitivityThreshold);
+            int subIslandPixelThreshold = pic.getPixelThreshold();
+            PathGenerator pg = new PathGenerator(pic, thickness, subIslandPixelThreshold);
+            Path path = pg.makePath();
+            ArrayList<Path.Point<Picture.Pixel, Boolean>> pathList = path.getPath();
 
-            if (pathList.get(pathIndex).getValue()) {
-                penString = "d";
+            // useful variables
+            int pathLength = pathList.size();
+            int pathIndex = 0;
+            int picHeight = pic.getPicture().length;
+            int picWidth = pic.getPicture()[0].length;
+            double xPrime; // x' and y' are the adjusted coordinates for the starting position of the marker after centering
+            double yPrime;
+            double ipr; // inch-pixel ratio
+
+            // Calculating inch-pixel ratio and x' and y' (remember x and y are using matrix coordinates)
+            if (((double) picWidth) / ((double) picHeight) < DRAW_WINDOW_WIDTH / DRAW_WINDOW_HEIGHT) {
+                ipr = DRAW_WINDOW_HEIGHT / (double) picHeight;
+                yPrime = ((DRAW_WINDOW_WIDTH - ipr * picWidth) / 2) / ipr;
+                xPrime = ((DRAW_WINDOW_HEIGHT - ipr * picHeight) / 2) / ipr;
             } else {
-                penString = "u";
+                ipr = DRAW_WINDOW_WIDTH / (double) picWidth;
+                yPrime = ((DRAW_WINDOW_WIDTH - ipr * picWidth) / 2) / ipr;
+                xPrime = ((DRAW_WINDOW_HEIGHT - ipr * picHeight) / 2) / ipr;
             }
 
-            if (pathIndex == 0) { // configuration block - ipr and x' and y'
-                toSend = toSend + "q" + ipr + "\n";
-                buffer.add(toSend);
-                System.out.print("");
-                toSend = "";
-                toSend = toSend + "c" + (int)xPrime + "." + (int)yPrime + "." + penString + "\n";
-                buffer.add(toSend);
-                ready = false;
-                System.out.print(""); // NEED THIS HERE TO RESOLVE A MULTITHREAD PROCESSING GLITCH
+            String penString;
 
-            } else if (pathIndex == pathLength - 1) {
-                toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "." + penString + "\n";
-                buffer.add(toSend);
-                System.out.print("");
-                buffer.add("z");
-                ready = false;
-                System.out.print("");
+            // Filling the buffer - we store the buffer processor-side because there's a limit to the size
+            // of the serial communication buffer for the Arduino (64 bytes)
+            while (pathIndex < pathLength) {
 
-            } else {
-                toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "." + penString + "\n";
-                buffer.add(toSend);
-                ready = false;
-                System.out.print("");
+                Path.Point<Picture.Pixel, Boolean> point = pathList.get(pathIndex);
+                String toSend = "";
+
+                if (pathList.get(pathIndex).getValue()) {
+                    penString = "d";
+                } else {
+                    penString = "u";
+                }
+
+                if (pathIndex == 0) { // configuration block - ipr and x' and y'
+                    toSend = toSend + "q" + ipr + "\n";
+                    buffer.add(toSend);
+                    System.out.print("");
+                    toSend = "";
+                    toSend = toSend + "c" + (int) xPrime + "." + (int) yPrime + "." + penString + "\n";
+                    buffer.add(toSend);
+                    ready = false;
+                    System.out.print(""); // NEED THIS HERE TO RESOLVE A MULTITHREAD PROCESSING GLITCH
+
+                } else if (pathIndex == pathLength - 1) {
+                    toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "." + penString + "\n";
+                    buffer.add(toSend);
+                    System.out.print("");
+                    buffer.add("z");
+                    ready = false;
+                    System.out.print("");
+
+                } else {
+                    toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "." + penString + "\n";
+                    buffer.add(toSend);
+                    ready = false;
+                    System.out.print("");
+                }
+
+                pathIndex++;
+
             }
 
-            pathIndex++;
+            /* DEBUGGING BLOCK
+            for (int i = 0; i < portNames.length; i++) {
+                System.out.println(portNames[i]);
+            }
+            */
+
+            System.out.println("PROCESSING COMPLETE!\n");
 
         }
-
-        /* DEBUGGING BLOCK
-        for (int i = 0; i < portNames.length; i++) {
-            System.out.println(portNames[i]);
-        }
-        */
-
-        System.out.println("PROCESSING COMPLETE!\n");
 
         int index = 0; // index for the number of available ports
         int bufferIndex = 0; // index for the set of instructions in the buffer
@@ -622,31 +677,33 @@ public class ArduinoCommunicator {
                         receive = getInput();
                     }
 
-                    serialPort.writeString("j");
+                    serialPort.writeString("y");
 
                 }
 
-                System.out.println("________________________________________________________");
-                System.out.println();
-                System.out.println("[IMPORTANT]");
-                System.out.println("Calibrate the marker's origin using the ARROW KEYS if needed. Try to place the marker");
-                System.out.println("about 1 inch from each of the sides.");
-                System.out.println("\n*** DO NOT HOLD DOWN THE KEYS! LIGHTLY TAP THEM OR THE PRINTER WILL STOP WORKING. ***");
-                System.out.println("If this happens, simply restart the printer.");
-                System.out.println("\nPress ENTER to continue.");
-                ta.addKeyListener(kl);
+                if(!freeDraw) {
+                    System.out.println("________________________________________________________");
+                    System.out.println();
+                    System.out.println("[IMPORTANT]");
+                    System.out.println("Calibrate the marker's origin using the ARROW KEYS if needed. Try to place the marker");
+                    System.out.println("about 1 inch from each of the sides.");
+                    System.out.println("\n*** DO NOT HOLD DOWN THE KEYS! LIGHTLY TAP THEM OR THE PRINTER WILL STOP WORKING. ***");
+                    System.out.println("If this happens, simply restart the printer.");
+                    System.out.println("\nPress ENTER to continue.");
+                    ta.addKeyListener(kl);
 
-                while(!pass) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    while (!pass) {
+                        try {
+                            Thread.sleep(10);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        int len = ta.getDocument().getLength();
+                        ta.setCaretPosition(len);
                     }
-                    int len = ta.getDocument().getLength();
-                    ta.setCaretPosition(len);
-                }
 
-                ta.removeKeyListener(kl);
+                    ta.removeKeyListener(kl);
+                }
 
                 System.out.println("________________________________________________________");
                 System.out.println();
@@ -658,25 +715,57 @@ public class ArduinoCommunicator {
                 System.out.println("\nPress ENTER to begin printing.\n");
                 getInput();
 
-                System.out.println();
-                System.out.println("________________________________________________________");
-                System.out.println();
-                System.out.println("***** Printing... *****\n");
+                if(!freeDraw) {
+                    System.out.println();
+                    System.out.println("________________________________________________________");
+                    System.out.println();
+                    System.out.println("***** Printing... *****\n");
 
-                // communicates instructions one at a time to the Arduino. only communicates as quickly as the
-                // the Arduino is ready to receive (that's the purpose of the ready variable).
+                    // communicates instructions one at a time to the Arduino. only communicates as quickly as the
+                    // the Arduino is ready to receive (that's the purpose of the ready variable).
 
-                ta.setCaretPosition(ta.getDocument().getLength());
+                    ta.setCaretPosition(ta.getDocument().getLength());
 
-
-                while(true) {
-                    System.out.print("");
-                    if (bufferIndex < buffer.size() && ready) {
-                        ready = false;
-                        serialPort.writeString(buffer.get(bufferIndex));
-                        bufferIndex++;
+                    while (true) {
+                        System.out.print("");
+                        if (bufferIndex < buffer.size() && ready) {
+                            ready = false;
+                            serialPort.writeString(buffer.get(bufferIndex));
+                            bufferIndex++;
+                        }
+                        if (done) break;
                     }
-                    if (done) break;
+                }
+
+                if(freeDraw) {
+
+                    System.out.println();
+                    System.out.println("________________________________________________________");
+                    System.out.println();
+                    System.out.println("Free Draw Mode has been activated! Draw whatever you want on the board.");
+                    System.out.println("Use the arrow keys to move along the X and Y axes and use SHIFT to toggle the");
+                    System.out.println("marker being up or down. Press Q to quit.\n");
+
+                    ta.addKeyListener(kl);
+
+                    while(inFreeDraw) {
+                        int len = ta.getDocument().getLength();
+                        ta.setCaretPosition(len);
+                    }
+
+                    System.out.println();
+                    System.out.println("________________________________________________________");
+                    System.out.println();
+                    System.out.println("Free Draw Mode Deactivated!\n");
+
+                    try {
+                        Thread.sleep(1500);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    ta.removeKeyListener(kl);
+
                 }
 
                 serialPort.closePort();

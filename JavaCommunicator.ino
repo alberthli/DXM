@@ -12,12 +12,12 @@ int x = 0;
 int y = 0;
 int xPrime = 0;
 int yPrime = 0;
-int neutralPos = 96;
-int downPos = 116;
+int neutralPos = 98;
+int downPos = 118;
 
 boolean firsttime = true;
 float ipr;
-int maxSpeedDoubled = 5; // inches/second lateral speed doubled.
+int maxSpeedDoubled = 7; // inches/second lateral speed doubled.
 
 void setup() {
   // FIX ATTACHMENTS AND STUFF
@@ -25,7 +25,8 @@ void setup() {
   yServo.attach(6); // pin 6 is for the y servo
   penServo.attach(3); // pin 3 is for the pen servo
   penServo.write(15);
-  penServo.write(neutralPos); 
+  delay(100);
+  penServo.write(neutralPos);
   Serial.begin(9600);
 }
 
@@ -63,7 +64,7 @@ void loop() {
         break;
 
       case 'j':
-        penServo.write(neutralPos);
+        penServo.write(downPos);
         break;
       
       case 'y':
@@ -72,27 +73,27 @@ void loop() {
       
       // These 4 cases are only for the initial marker calibration
       case 'w':
-        yServo.write(180);
+        xServo.write(180);
         delay(100);
-        yServo.write(90);
+        xServo.write(90);
         break;
 
       case 's':
-        yServo.write(0);
-        delay(100);
-        yServo.write(90);
-        break;
-
-      case 'a':
         xServo.write(0);
         delay(100);
         xServo.write(90);
         break;
 
-      case 'd':
-        xServo.write(180);
+      case 'a':
+        yServo.write(0);
         delay(100);
-        xServo.write(90);
+        yServo.write(90);
+        break;
+
+      case 'd':
+        yServo.write(180);
+        delay(100);
+        yServo.write(90);
         break;
       
       case 'p': // p means it's receiving a new point to move to
@@ -183,12 +184,11 @@ void loop() {
           
           long time = (long)((2000 * ipr * ayd) / maxSpeedDoubled) + 1;
           
-          if (xDist < 0) { // pen moves up, send high signal
+          if (xDist < 0) { // pen moves right, send high signal
             xInstr = 90 * (1 + ((double)axd / (double)ayd));
             
-          } else { // pen moves down, send low signal
+          } else { // pen moves left, send low signal
             xInstr = 90 * (1 - ((double)axd / (double)ayd));
-            
           }
 
           if (yDist < 0) { // pen moves left, send low signal
@@ -316,6 +316,7 @@ void loop() {
         // Moves the pen back to the absolute origin.
         if (xPrime > yPrime) {
           long time = (long)((2000 * ipr * xPrime) / maxSpeedDoubled) + 1;
+          
           xInstr = 180;
           yInstr = 90 * (1 - ((double)yPrime / (double)xPrime));
 
@@ -328,6 +329,7 @@ void loop() {
           
         } else {
           long time = (long)((2000 * ipr * yPrime) / maxSpeedDoubled) + 1;
+          
           xInstr = 90 * (1 + ((double)xPrime / (double)yPrime));
           yInstr = 0;
 
