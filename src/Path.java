@@ -7,6 +7,11 @@
  * and coordinates for where the pen should move.
  *
  * Changelog:
+ *
+ *      11/9/16 and on -
+ *          Most of the code is functional now, so I will mostly be posting small updates via commits on GitHub.
+ *          Only major changes will be reflected here.
+ *
  *      v1.0.0 - 10/4/16
  *          - NO CHANGES - MARKING FIRST RELEASE.
  *      v0.2.1 - 9/29/16

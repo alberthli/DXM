@@ -5,6 +5,11 @@
  * Description: Animates a path
  *
  * Changelog:
+ *
+ *      11/9/16 and on -
+ *          Most of the code is functional now, so I will mostly be posting small updates via commits on GitHub.
+ *          Only major changes will be reflected here.
+ *
  *      v1.0.0 - 10/4/16 -
  *          - First pass of the animation program with capabilities to:
  *              - Draw the bounds of the islands of the picture
@@ -88,7 +93,7 @@ public class Animator extends JPanel implements ActionListener {
             int timeDelay = 1; // Delay between line segments drawn in ms
 
             // Which image is being drawn - manually change this because this program is for visualization only
-            File applyToAllTests = img3;
+            File applyToAllTests = img9;
 
             // Don't mess with anything in this block.
             BufferedImage imagePathTest = ImageIO.read(applyToAllTests);

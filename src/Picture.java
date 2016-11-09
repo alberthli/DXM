@@ -5,6 +5,11 @@
  * Description: Takes in a raw image and prepares it for pen path processing
  *
  * Changelog:
+ *
+ *      11/9/16 and on -
+ *          Most of the code is functional now, so I will mostly be posting small updates via commits on GitHub.
+ *          Only major changes will be reflected here.
+ *
  *      UPCOMING CHANGES -
  *          - [MAYBE] Analyze picture to determine whether to invert colors (if more shading than empty space)
  *      v1.0.1 - 10/22/16

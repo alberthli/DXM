@@ -5,6 +5,11 @@
  * Description: Takes in a Picture object and has the capabilities to generate a Path object.
  *
  * Changelog:
+ *
+ *      11/9/16 and on -
+ *          Most of the code is functional now, so I will mostly be posting small updates via commits on GitHub.
+ *          Only major changes will be reflected here.
+ *
  *      UPCOMING CHANGES -
  *              - [] [MAYBE] Add more tiebreaking capabilities for island processing!
  *              - [-] Implement smart path editing

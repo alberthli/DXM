@@ -6,7 +6,11 @@
  *
  * Changelog:
  *      UPCOMING CHANGES -
- *          - [IMPORTANT] Add in ability to move pen up and down
+ *
+ *      11/9/16 and on -
+ *          Most of the code is functional now, so I will mostly be posting small updates via commits on GitHub.
+ *          Only major changes will be reflected here.
+ *
  *      v1.1.0 - 10/25/16
  *          - Added in ability to calibrate marker position before printing begins
  *          - Changed menu slightly
@@ -37,7 +41,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Exchanger;
 
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
