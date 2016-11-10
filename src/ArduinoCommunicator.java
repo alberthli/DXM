@@ -9,7 +9,10 @@
  *
  *      11/9/16 and on -
  *          Most of the code is functional now, so I will mostly be posting small updates via commits on GitHub.
- *          Only major changes will be reflected here.
+ *          Only major changes will be reflected hRere.
+ *
+ *      v2.0.0 - 10/9/16
+ *          - Changed out physical assembly entirely. Added ability to insert the board.
  *
  *      v1.1.0 - 10/25/16
  *          - Added in ability to calibrate marker position before printing begins

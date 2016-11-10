@@ -12,8 +12,8 @@ int x = 0;
 int y = 0;
 int xPrime = 0;
 int yPrime = 0;
-int neutralPos = 102;
-int downPos = 122;
+int neutralPos = 20;
+int downPos = 40;
 
 boolean firsttime = true;
 float ipr;
