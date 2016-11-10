@@ -12,8 +12,8 @@ int x = 0;
 int y = 0;
 int xPrime = 0;
 int yPrime = 0;
-int neutralPos = 98;
-int downPos = 118;
+int neutralPos = 102;
+int downPos = 122;
 
 boolean firsttime = true;
 float ipr;
@@ -59,6 +59,7 @@ void loop() {
     // Cases for the incoming bytes
     switch (incomingByte) {
 
+      // These three cases are for the three pen positions
       case 'k':
         penServo.write(15);
         break;
@@ -69,6 +70,13 @@ void loop() {
       
       case 'y':
         penServo.write(neutralPos); 
+        break;
+
+      //Inserts the board
+      case 'b':
+        xServo.write(180);
+        delay(1000);
+        xServo.write(90);
         break;
       
       // These 4 cases are only for the initial marker calibration

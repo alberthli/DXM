@@ -684,6 +684,34 @@ public class ArduinoCommunicator {
 
                 }
 
+                receive = "";
+
+                System.out.println("________________________________________________________");
+                System.out.println();
+                System.out.println("Do you need to remove/insert the board? Enter \"Y\" to do so,");
+                System.out.println("anything else to ignore.\n");
+
+                receive = getInput();
+
+                if(receive.equals("Y") || receive.equals("y")) {
+
+                    receive = "";
+
+                    System.out.println("The printer is ready for insertion. Place the board near the servo");
+                    System.out.println("and enter \"Y\".\n");
+
+                    while(!receive.equals("y") && !receive.equals("Y")) {
+                        receive = getInput();
+                    }
+
+                    serialPort.writeString("b");
+
+                    System.out.println("________________________________________________________");
+                    System.out.println();
+                    System.out.println("The board has been inserted!");
+
+                }
+
                 if(!freeDraw) {
                     System.out.println("________________________________________________________");
                     System.out.println();
