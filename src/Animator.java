@@ -88,12 +88,12 @@ public class Animator extends JPanel implements ActionListener {
             // probably closer to a circle, but we can use squares to approximate it for sufficiently small sizes.
             double pixelThresholdPercent = .01;
             double rgbSensitivityThreshold = 48;
-            int thickness = 1;
+            int thickness = 5;
 
-            int timeDelay = 1; // Delay between line segments drawn in ms
+            int timeDelay = 10; // Delay between line segments drawn in ms
 
             // Which image is being drawn - manually change this because this program is for visualization only
-            File applyToAllTests = img9;
+            File applyToAllTests = img2;
 
             // Don't mess with anything in this block.
             BufferedImage imagePathTest = ImageIO.read(applyToAllTests);

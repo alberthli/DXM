@@ -50,10 +50,12 @@ public class Path {
 
         private K key;
         private V value;
+        private int time;
 
-        public Point(K key, V value) {
+        public Point(K key, V value, int time) {
             this.key = key;
             this.value = value;
+            this.time = time;
         }
 
         public void setKey(K key) {
@@ -64,12 +66,20 @@ public class Path {
             this.value = value;
         }
 
+        public void setTime(int time) {
+            this.time = time;
+        }
+
         public K getKey() {
             return key;
         }
 
         public V getValue() {
             return value;
+        }
+
+        public int getTime() {
+            return time;
         }
     }
 
@@ -94,8 +104,8 @@ public class Path {
     //*******************//
 
     // [DEBUGGED] Adds a point to the path, specifies whether the pen should be up or down
-    public void addPoint(Picture.Pixel p, boolean penDown) {
-        path.add(new Point(p, penDown));
+    public void addPoint(Picture.Pixel p, boolean penDown, int time) {
+        path.add(new Point(p, penDown, time));
     }
 
     // [DEBUGGED] Returns the point in the path that matches the coordinates of Pixel p

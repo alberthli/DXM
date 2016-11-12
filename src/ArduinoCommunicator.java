@@ -70,10 +70,6 @@ public class ArduinoCommunicator {
     private static boolean inFreeDraw = false;
     private static boolean isUp = false;
 
-    // these depend on the physical dimensions of the board
-    private static final double DRAW_WINDOW_WIDTH = 12; // inches
-    private static final double DRAW_WINDOW_HEIGHT = 9; // inches
-
     private static JTextArea ta;
 
     // Reads incoming messages from the Arduino
@@ -295,11 +291,11 @@ public class ArduinoCommunicator {
         File img4 = new File("images/Test14.jpeg"); // overdose sign [1; rgb48]
         File img5 = new File("images/Test16.jpeg"); // Brain
         File img6 = new File("images/Test21.png"); // Thermo Diagram (better quality)
-        File img7 = new File("images/Test0.png"); // Three Lines
+        File img7 = new File("images/Test2.png"); // Three Lines
 
         // DEFAULT SETTINGS FOR THE PICTURE.
         double pixelThresholdPercent = .01;
-        int thickness = 9; // fairly static, not sure if I will change it
+        int thickness = 5; // fairly static, not sure if I will change it
         double rgbSensitivityThreshold = 48; // just a default value, will be changed in the code
         BufferedImage image = null;
 
@@ -343,7 +339,7 @@ public class ArduinoCommunicator {
             System.out.println("(4) Interesting Sign");
             System.out.println("(5) The Brain");
             System.out.println("(6) Thermodynamic Diagram");
-            System.out.println("(7) One Line");
+            System.out.println("(7) Three Lines");
             System.out.println("(8) Free Draw!\n");
             System.out.println("What would you like to print? Enter the number here: \n");
 
@@ -501,7 +497,9 @@ public class ArduinoCommunicator {
                         System.out.println("\nPlease enter a number between 0 and 255!\n");
                     }
                 }
+            }
 
+            if (!freeDraw) {
                 System.out.println();
                 System.out.println("________________________________________________________");
                 System.out.println();
@@ -569,22 +567,9 @@ public class ArduinoCommunicator {
             // useful variables
             int pathLength = pathList.size();
             int pathIndex = 0;
-            int picHeight = pic.getPicture().length;
-            int picWidth = pic.getPicture()[0].length;
-            double xPrime; // x' and y' are the adjusted coordinates for the starting position of the marker after centering
-            double yPrime;
-            double ipr; // inch-pixel ratio
-
-            // Calculating inch-pixel ratio and x' and y' (remember x and y are using matrix coordinates)
-            if (((double) picWidth) / ((double) picHeight) < DRAW_WINDOW_WIDTH / DRAW_WINDOW_HEIGHT) {
-                ipr = DRAW_WINDOW_HEIGHT / (double) picHeight;
-                yPrime = ((DRAW_WINDOW_WIDTH - ipr * picWidth) / 2) / ipr;
-                xPrime = ((DRAW_WINDOW_HEIGHT - ipr * picHeight) / 2) / ipr;
-            } else {
-                ipr = DRAW_WINDOW_WIDTH / (double) picWidth;
-                yPrime = ((DRAW_WINDOW_WIDTH - ipr * picWidth) / 2) / ipr;
-                xPrime = ((DRAW_WINDOW_HEIGHT - ipr * picHeight) / 2) / ipr;
-            }
+            double xPrime = pg.getxPrime(); // x' and y' are the adjusted coordinates for the starting position of the marker after centering
+            double yPrime = pg.getyPrime();
+            double ipr = pg.getIpr(); // inch-pixel ratio
 
             String penString;
 
@@ -606,23 +591,23 @@ public class ArduinoCommunicator {
                     buffer.add(toSend);
                     System.out.print("");
                     toSend = "";
-                    toSend = toSend + "c" + (int) xPrime + "." + (int) yPrime + "." + penString + "\n";
+                    toSend = toSend + "c" + (int) xPrime + "." + (int) yPrime + "." + point.getTime() + "\n";
                     buffer.add(toSend);
-                    ready = false;
+                    // ready = false;
                     System.out.print(""); // NEED THIS HERE TO RESOLVE A MULTITHREAD PROCESSING GLITCH
 
                 } else if (pathIndex == pathLength - 1) {
-                    toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "." + penString + "\n";
+                    toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "." + penString + "." + point.getTime() + "\n";
                     buffer.add(toSend);
                     System.out.print("");
                     buffer.add("z");
-                    ready = false;
+                    // ready = false;
                     System.out.print("");
 
                 } else {
-                    toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "." + penString + "\n";
+                    toSend = toSend + "p" + point.getKey().getX() + "." + point.getKey().getY() + "." + penString + "." + point.getTime() + "\n";
                     buffer.add(toSend);
-                    ready = false;
+                    // ready = false;
                     System.out.print("");
                 }
 

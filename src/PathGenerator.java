@@ -108,6 +108,15 @@ public class PathGenerator {
     private int subIslandPixelThreshold;
     private Map<Picture.Pixel, Boolean> edgeMap;
     private HashSet<Picture.Pixel> addedToSubisland;
+
+    private static final double DRAW_WINDOW_WIDTH = 12; // inches
+    private static final double DRAW_WINDOW_HEIGHT = 9; // inches
+    private static final int timeLowerBound = 55; // ms - if any times are lower than this, multiply all times by factor
+    private static final double maxSpeed = 2.5; // inches/second
+    private double ipr;
+    private int xPrime;
+    private int yPrime;
+
     private int count = 0; // for debugging only
 
     //************************//
@@ -137,6 +146,19 @@ public class PathGenerator {
         for (Picture.Pixel p : this.pic.getAllPixels()) {
             edgeMap.put(p, inside(p));
         }
+
+        if (((double) pic.getPicture()[0].length) / ((double) pic.getPicture().length) < DRAW_WINDOW_WIDTH / DRAW_WINDOW_HEIGHT) {
+            this.ipr = DRAW_WINDOW_HEIGHT / (double) pic.getPicture().length;
+            yPrime = (int)(((DRAW_WINDOW_WIDTH - ipr * pic.getPicture()[0].length) / 2) / ipr);
+            xPrime = (int)(((DRAW_WINDOW_HEIGHT - ipr * pic.getPicture().length) / 2) / ipr);
+
+        } else {
+            this.ipr = DRAW_WINDOW_WIDTH / (double) pic.getPicture()[0].length;
+            yPrime = (int)(((DRAW_WINDOW_WIDTH - ipr * pic.getPicture()[0].length) / 2) / ipr);
+            xPrime = (int)(((DRAW_WINDOW_HEIGHT - ipr * pic.getPicture().length) / 2) / ipr);
+
+        }
+
     }
 
     // [DEBUGGED]
@@ -208,6 +230,18 @@ public class PathGenerator {
 
     public Map<Picture.Pixel, Boolean> getEdgeMap() {
         return edgeMap;
+    }
+
+    public double getIpr() {
+        return ipr;
+    }
+
+    public int getxPrime() {
+        return xPrime;
+    }
+
+    public int getyPrime() {
+        return yPrime;
     }
 
     //*******************//
@@ -1151,7 +1185,18 @@ public class PathGenerator {
 
             // Need this chunk to prevent re-adding same points to the path.
             if (path.length() == 0) {
-                path.addPoint(curr, false);
+
+                int time;
+
+                if (curr.getX() > curr.getY()) {
+                    time = (int)(1000 * ipr * curr.getX() / maxSpeed);
+
+                } else {
+                    time = (int)(1000 * ipr * curr.getY() / maxSpeed);
+
+                }
+
+                path.addPoint(curr, false, time);
             }
 
             setCursorX(curr.getX());
@@ -1162,30 +1207,56 @@ public class PathGenerator {
             islandsLeft.remove(island);
             Picture.Pixel next = nextInIsland(island);
 
-            if (next == null) {
+            int currX;
+            int currY;
+            int nextX;
+            int nextY;
 
+            if (next == null) {
                 islandsLeft.remove(island);
                 Picture.Pixel nextPix = getClosestUnprocessedPixelGlobal();
                 island = nextPix.getParentIsland();
+
                 if (nextPix != null) {
                     next = nextPix;
+
                 } else {
                     return path;
                 }
+
             }
 
             // Loops while there are still applicable Pixels in the island
             while (next != null) {
 
+                currX = curr.getX();
+                currY = curr.getY();
+                nextX = next.getX();
+                nextY = next.getY();
+
+                int axd = Math.abs(currX - nextX);
+                int ayd = Math.abs(currY - nextY);
+                int time;
+
+                if (axd > ayd) { // move up/down at max speed
+
+                    time = (int)(1000 * ipr * axd / maxSpeed);
+
+                } else { // move left/right at max speed
+
+                    time = (int)(1000 * ipr * ayd / maxSpeed);
+
+                }
+
                 // If the pixels are next to each other then pen stays down.
                 // Otherwise, lift the pen.
                 if (pixelsAdjacent(curr, next)) {
-                    path.addPoint(next, true);
+                    path.addPoint(next, true, time);
                     // If pen stays down, mark all intermediate extraneous Pixels
                     mark(curr, next);
                 } else {
-                    path.addPoint(next, false);
-                    path.addPoint(next, true);
+                    path.addPoint(next, false, time);
+                    path.addPoint(next, true, 50); // this time value is hardcoded for the pen lifting
                 }
 
                 setCursorX(next.getX());
@@ -1201,10 +1272,40 @@ public class PathGenerator {
             reduceOverflow(point.getKey(), path);
         }
 
+        int time;
+
+        if (curr.getX() > curr.getY()) {
+            time = (int)(1000 * ipr * curr.getX() / maxSpeed);
+        } else {
+            time = (int)(1000 * ipr * curr.getY() / maxSpeed);
+        }
+
         // Returns to the origin at the end
-        path.addPoint(new Picture().new Pixel(0, 0), false);
+        path.addPoint(new Picture().new Pixel(0, 0), false, time);
 
+        // Multiplying all times by factor to ensure movement
+        int lowestTime = Integer.MAX_VALUE;
 
+        for (int i = 0; i < path.length(); i++) {
+
+            int currTime = path.getPath().get(i).getTime();
+
+            if (currTime < lowestTime) {
+                lowestTime = currTime;
+            }
+        }
+
+        if (lowestTime < timeLowerBound) { // multiply all times if needed
+
+            double timeRatio = (double)timeLowerBound / (double)lowestTime;
+
+            for (int i = 0; i < path.length(); i++) {
+
+                int currTime = path.getPath().get(i).getTime();
+                path.getPath().get(i).setTime((int)(currTime * timeRatio));
+
+            }
+        }
 
         return path;
     }

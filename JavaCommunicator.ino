@@ -12,17 +12,16 @@ int x = 0;
 int y = 0;
 int xPrime = 0;
 int yPrime = 0;
-int neutralPos = 20;
-int downPos = 40;
+int neutralPos = 30;
+int downPos = 50;
 
 boolean firsttime = true;
 float ipr;
-int maxSpeedDoubled = 7; // inches/second lateral speed doubled.
 
 void setup() {
   // FIX ATTACHMENTS AND STUFF
-  xServo.attach(5); // pin 5 is for the x servo
-  yServo.attach(6); // pin 6 is for the y servo
+  xServo.attach(5, 775, 2000); // pin 5 is for the x servo
+  yServo.attach(6, 870, 2000); // pin 6 is for the y servo
   penServo.attach(3); // pin 3 is for the pen servo
   penServo.write(15);
   delay(100);
@@ -53,6 +52,7 @@ void loop() {
     int ayd;
     String temp;
     String pString;
+    long time;
     
     byte incomingByte = Serial.read();
 
@@ -74,33 +74,33 @@ void loop() {
 
       //Inserts the board
       case 'b':
-        xServo.write(180);
-        delay(1000);
+        xServo.write(0);
+        delay(3000);
         xServo.write(90);
         break;
       
       // These 4 cases are only for the initial marker calibration
       case 'w':
         xServo.write(180);
-        delay(100);
+        delay(75);
         xServo.write(90);
         break;
 
       case 's':
         xServo.write(0);
-        delay(100);
+        delay(75);
         xServo.write(90);
         break;
 
       case 'a':
         yServo.write(0);
-        delay(100);
+        delay(75);
         yServo.write(90);
         break;
 
       case 'd':
         yServo.write(180);
-        delay(100);
+        delay(75);
         yServo.write(90);
         break;
       
@@ -124,7 +124,7 @@ void loop() {
         while (true) { // yCoord block
           
           incomingByte = Serial.read();
-          if (incomingByte == '.') // newline ends the reception of data
+          if (incomingByte == '.') // period moves to pen block
             break;
           if (incomingByte == 255) // if serial comm is too slow it sends nothing (255)
             continue;
@@ -136,12 +136,11 @@ void loop() {
         while (true) { // boolean block
           
           incomingByte = Serial.read();
-          if (incomingByte == '\n') // new line ends this block
+          if (incomingByte == '.') // period moves to time block
             break;
           if (incomingByte == 255) // if serial comm is too slow it sends nothing (255)
             continue;
 
-          // CHANGE THE PINSTR VALUES LATER
           if (incomingByte == 'u') {
             pInstr = neutralPos;
             pString = "PEN UP";
@@ -149,7 +148,19 @@ void loop() {
             pInstr = downPos;
             pString = "PEN DOWN";
           }
-        
+          
+        }
+
+        while (true) { // time block
+
+          incomingByte = Serial.read();
+          if (incomingByte == '\n') // newline ends data
+            break;
+          if (incomingByte == 255) // if serial comm is too slow it sends nothing (255)
+            continue;
+          
+          time *= 10;
+          time = ((incomingByte - 48) + time);
         }
         
         xDist = xCoord - x + xPrime;
@@ -158,8 +169,6 @@ void loop() {
         ayd = abs(yDist);
 
         if (axd > ayd) { // x is max speed, y is fraction of max
-          
-          long time = (long)((2000 * ipr * axd) / maxSpeedDoubled) + 1;
           
           if (xDist < 0) { // pen moves up, send high signal
             xInstr = 180;
@@ -176,7 +185,7 @@ void loop() {
             yInstr = 90 * (1 + ((double)ayd / (double)axd));
             
           }
-
+          
           xServo.write(xInstr);
           yServo.write(yInstr);
           penServo.write(pInstr);
@@ -189,8 +198,6 @@ void loop() {
           y = yCoord + yPrime;
           
         } else {
-          
-          long time = (long)((2000 * ipr * ayd) / maxSpeedDoubled) + 1;
           
           if (xDist < 0) { // pen moves right, send high signal
             xInstr = 90 * (1 + ((double)axd / (double)ayd));
@@ -227,6 +234,8 @@ void loop() {
         Serial.print(y);
         Serial.print(" | ");
         Serial.print(pString);
+        Serial.print(" | DELAY: ");
+        Serial.print(time);
         Serial.println("\r");
         break;
         
@@ -244,16 +253,27 @@ void loop() {
         
         while (true) { // yPrime block
           incomingByte = Serial.read();
-          if (incomingByte == '\n') // newline ends the reception of data
+          if (incomingByte == '.') // newline ends the reception of data
             break;
           if (incomingByte == 255 || incomingByte == 'u') // if serial comm is too slow it sends nothing (255)
             continue;
           yPrime *= 10;
           yPrime = ((incomingByte - 48) + yPrime);
         }
+        
+        while (true) { // time block
+          
+          incomingByte = Serial.read();
+          if (incomingByte == '\n') // newline ends data
+            break;
+          if (incomingByte == 255) // if serial comm is too slow it sends nothing (255)
+            continue;
+          
+          time *= 10;
+          time = ((incomingByte - 48) + time);
+        }
 
         if (xPrime > yPrime) {
-          long time = (long)((2000 * ipr * xPrime) / maxSpeedDoubled) + 1;
           
           xInstr = 0;
           yInstr = 90 * (1 + ((double)yPrime / (double)xPrime));
@@ -268,7 +288,6 @@ void loop() {
           y = yPrime;
           
         } else {
-          long time = (long)((2000 * ipr * yPrime) / maxSpeedDoubled) + 1;
           
           xInstr = 90 * (1 - ((double)xPrime / (double)yPrime));
           yInstr = 180;
@@ -292,6 +311,8 @@ void loop() {
         Serial.print(", y': ");
         Serial.print(yPrime);
         Serial.print(" | PEN UP");
+        Serial.print(" | DELAY: ");
+        Serial.print(time);
         Serial.println("\r");
         break;
 
@@ -320,35 +341,6 @@ void loop() {
         break;
 
        case 'z': // z means serial communication has been completed
-
-        // Moves the pen back to the absolute origin.
-        if (xPrime > yPrime) {
-          long time = (long)((2000 * ipr * xPrime) / maxSpeedDoubled) + 1;
-          
-          xInstr = 180;
-          yInstr = 90 * (1 - ((double)yPrime / (double)xPrime));
-
-          xServo.write(xInstr);
-          yServo.write(yInstr);
-          penServo.write(neutralPos); 
-          delay(time);
-          xServo.write(90);
-          yServo.write(90);
-          
-        } else {
-          long time = (long)((2000 * ipr * yPrime) / maxSpeedDoubled) + 1;
-          
-          xInstr = 90 * (1 + ((double)xPrime / (double)yPrime));
-          yInstr = 0;
-
-          xServo.write(xInstr);
-          yServo.write(yInstr);
-          penServo.write(neutralPos); 
-          delay(time);
-          xServo.write(90);
-          yServo.write(90);
-          
-        }
         
         Serial.print(">r\r");
         Serial.print(">");

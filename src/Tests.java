@@ -182,8 +182,8 @@ public class Tests {
             System.out.println();
             System.out.println("[BELOW: TEST 3. CREATING PATH WITH 2 PIXELS.]");
             System.out.println();
-            path.addPoint(pix1, false);
-            path.addPoint(pix2, true);
+            path.addPoint(pix1, false, 0);
+            path.addPoint(pix2, true, 0);
             printPath(path);
             System.out.println("Path Length: " + path.length());
             System.out.println();
@@ -191,8 +191,8 @@ public class Tests {
 
             System.out.println("[BELOW: TEST 4. ADDING 2 MORE PIXELS INTO EXISTING PATH.]");
             System.out.println();
-            path.addPoint(pix3, true);
-            path.addPoint(pix4, true);
+            path.addPoint(pix3, true, 0);
+            path.addPoint(pix4, true, 0);
             printPath(path);
             System.out.println("Path Length: " + path.length());
             System.out.println();
